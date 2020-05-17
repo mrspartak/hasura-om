@@ -2,11 +2,8 @@ name: Test coverage
 
 on: ["push", "pull_request"]
 
-name: Test Coveralls
-
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
     strategy:
       matrix:
