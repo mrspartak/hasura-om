@@ -16,6 +16,9 @@ jobs:
           node-version: ${{ matrix.node }}
     - run: npm install
     - run: npm test
+      env:
+        GQL_ENDPOINT: ${{secrets.GQL_ENDPOINT}}
+        GQL_SECRET: ${{secrets.GQL_SECRET}}
 
     - name: Coveralls
       uses: coverallsapp/github-action@master
