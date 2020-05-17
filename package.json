@@ -1,0 +1,39 @@
+{
+  "name": "hasura-om",
+  "version": "0.0.1",
+  "description": "Hasura object mapping",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "ava",
+    "test_dev": "ava --watch",
+    "release": "npm-github-release"
+  },
+  "author": "Spartak <iam@spartak.io> (https://spartak.io/)",
+  "license": "MIT",
+  "ava": {
+    "files": [
+      "tests/**/*"
+    ],
+    "require": [
+      "esm"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged --pattern \"**/*.*(js|jsx)\""
+    }
+  },
+  "dependencies": {
+    "axios": "^0.19.2"
+  },
+  "devDependencies": {
+    "ava": "^3.8.2",
+    "esm": "^3.2.25",
+    "graphql": "^15.0.0",
+    "graphql-tag": "^2.10.3",
+    "husky": "^4.2.5",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5",
+    "pretty-quick": "^2.0.1"
+  }
+}
