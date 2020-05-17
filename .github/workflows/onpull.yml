@@ -1,6 +1,13 @@
 name: Test coverage
 
-on: ["push", "pull_request"]
+on:
+  push:
+    tags-ignore:
+      - '**'
+  pull_request:
+    types: [assigned, opened, edited, synchronize, reopened, review_requested]
+    tags-ignore:
+      - '**'
 
 jobs:
   build:
