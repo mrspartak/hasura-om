@@ -16,7 +16,6 @@ jobs:
       env:
         GQL_ENDPOINT: ${{secrets.GQL_ENDPOINT}}
         GQL_SECRET: ${{secrets.GQL_SECRET}}
-    - run: npm run coverage
 
     - name: Coveralls
       uses: coverallsapp/github-action@master
