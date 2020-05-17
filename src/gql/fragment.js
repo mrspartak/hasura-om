@@ -11,11 +11,13 @@ class Fragment {
 		this.params = Object.assign({}, defaultParams, params);
 
 		if (!this.params.table) throw new Error('table is required');
+
+		this.gqlFields = fieldsToGql(this.params.fields);
 	}
 
 	toString() {
 		let fragmentName = `${this.params.name}_fragment_${this.params.table}`;
-		let fields = fieldsToGql(this.params.fields);
+		let fields = this.gqlFields;
 
 		return {
 			name: fragmentName,

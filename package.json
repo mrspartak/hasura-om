@@ -4,9 +4,10 @@
   "description": "Hasura object mapping",
   "main": "src/index.js",
   "scripts": {
-    "test": "ava",
-    "test_dev": "ava --watch",
-    "release": "npm-github-release"
+    "test": "nyc --reporter=html --reporter=text ava",
+    "test_dev": "nyc --reporter=html --reporter=text ava --watch",
+    "release": "npm-github-release",
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "author": "Spartak <iam@spartak.io> (https://spartak.io/)",
   "license": "MIT",
@@ -28,11 +29,14 @@
   },
   "devDependencies": {
     "ava": "^3.8.2",
+    "coveralls": "^3.1.0",
+    "dotenv": "^8.2.0",
     "esm": "^3.2.25",
     "graphql": "^15.0.0",
     "graphql-tag": "^2.10.3",
     "husky": "^4.2.5",
     "nodemon": "^2.0.4",
+    "nyc": "^15.0.1",
     "prettier": "^2.0.5",
     "pretty-quick": "^2.0.1"
   }

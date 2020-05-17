@@ -146,3 +146,45 @@ test('checking big declaration', (t) => {
 	var { raw } = fragment.toString();
 	t.deepEqual(gql(raw), testFragment);
 });
+
+test('check for incopatable fields format', (t) => {
+	t.throws(
+		() => {
+			return new Fragment({
+				table: 'test',
+				fields: [['id']],
+			});
+		},
+		{ instanceOf: Error },
+	);
+
+	t.throws(
+		() => {
+			return new Fragment({
+				table: 'test',
+				fields: [
+					'id',
+					{
+						some: 'name',
+					},
+				],
+			});
+		},
+		{ instanceOf: Error },
+	);
+
+	t.throws(
+		() => {
+			return new Fragment({
+				table: 'test',
+				fields: {
+					id: {},
+					langs: {
+						children: [],
+					},
+				},
+			});
+		},
+		{ instanceOf: Error },
+	);
+});

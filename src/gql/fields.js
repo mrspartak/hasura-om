@@ -34,6 +34,8 @@ exports.fieldsToGql = function (input) {
 		input.forEach((el) => {
 			if (Array.isArray(el)) throw new Error('array cant contain array');
 			else if (typeof el == 'object') {
+				if (typeof el.key == 'undefined' || typeof el.values == 'undefined') throw new Error('in array object must have keys: `key` & `values`');
+
 				let subFragment = exports.fieldsToGql(el.values);
 				baseArray.push(`
                     ${el.key} {
@@ -48,6 +50,8 @@ exports.fieldsToGql = function (input) {
 			let value = input[key];
 			if (value.children) {
 				let subFragment = exports.fieldsToGql(value.children);
+				if (!subFragment) throw new Error(`cant create fields from object ${key}`);
+
 				baseArray.push(`
                     ${key} {
                         ${subFragment}
