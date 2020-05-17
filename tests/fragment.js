@@ -187,4 +187,24 @@ test('check for incopatable fields format', (t) => {
 		},
 		{ instanceOf: Error },
 	);
+
+	t.throws(
+		() => {
+			return new Fragment({
+				table: 'test',
+				fields: 123,
+			});
+		},
+		{ instanceOf: Error },
+	);
+
+	t.throws(
+		() => {
+			return new Fragment({
+				table: 'test',
+				fields: [123],
+			});
+		},
+		{ instanceOf: Error },
+	);
 });

@@ -110,7 +110,7 @@ class Table {
 				name: `Q${this.params.name}`,
 				variables: query_variables,
 				fields: `
-                    ${this.params.name}(${query_field_variables.join(', ')}) {
+                    ${this.params.name} ${query_field_variables.length ? '(' + query_field_variables.join(', ') + ')' : ''} {
                         ${fields}
                     }
                 `,

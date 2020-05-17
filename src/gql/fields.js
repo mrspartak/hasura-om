@@ -32,7 +32,8 @@ exports.fieldsToGql = function (input) {
 	if (typeof input == 'string') return input;
 	else if (Array.isArray(input)) {
 		input.forEach((el) => {
-			if (Array.isArray(el)) throw new Error('array cant contain array');
+			if (typeof el == 'string') baseArray.push(el);
+			else if (Array.isArray(el)) throw new Error('array cant contain array');
 			else if (typeof el == 'object') {
 				if (typeof el.key == 'undefined' || typeof el.values == 'undefined') throw new Error('in array object must have keys: `key` & `values`');
 
@@ -42,7 +43,7 @@ exports.fieldsToGql = function (input) {
                         ${subFragment}
                     }
                 `);
-			} else baseArray.push(el);
+			} else throw new Error(`unsupported type ${typeof el}`);
 		});
 		return baseArray.join('\n');
 	} else if (typeof input == 'object') {
@@ -60,5 +61,5 @@ exports.fieldsToGql = function (input) {
 			} else baseArray.push(key);
 		});
 		return baseArray.join('\n');
-	}
+	} else throw new Error(`unsupported type ${typeof input}`);
 };

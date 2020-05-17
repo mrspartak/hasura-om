@@ -148,7 +148,7 @@ class Hasura {
 
 		let query = `
             ${Object.values(queryFragments).join('\n')}
-            query ${queryName.join('_')} (${queryVariables.join(', ')}) {
+            query ${queryName.join('_')} ${queryVariables.length ? '(' + queryVariables.join(', ') + ')' : ''} {
                 ${queryFields.join('\n')}
             }
         `;
@@ -159,9 +159,26 @@ class Hasura {
 	/* 
         {
             [table_name]: {
-                insert: {},
-                update: {},
-                delete: {}
+                insert: {
+					objects
+
+					fields
+                	fragment
+				},
+                update: {
+					where
+					_set
+					_inc
+					
+					fields
+                	fragment
+				},
+                delete: {
+					where
+
+					fields
+                	fragment
+				}
             }
         }
     */
@@ -214,8 +231,6 @@ class Hasura {
 				queryFlatSetting.push(built.query.flatSetting);
 				variables = Object.assign({}, variables, built.variables);
 			});
-
-			console.log('queryFlatSetting', queryFlatSetting);
 		});
 
 		let query = `
