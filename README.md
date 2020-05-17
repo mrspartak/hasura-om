@@ -114,3 +114,89 @@ result = {
 } 
 */
 ```
+
+The only control you have is fragments. So this library provides base fragments with all table fields without relations. Of course you need them, so you have many ways to do so.
+```javascript
+
+//here is an example of simple query
+var [err, response] = orm.query({
+    user: {}
+})
+
+//So here some examples with fields key
+var [err, response] = orm.query({
+    user: {
+        fields: `
+            name
+            posts {
+                title
+            }
+        `,
+        
+        //or
+        fields: [
+            'name',
+            {
+                key: 'posts',
+                values: [
+                    'title'
+                ]
+            }
+        ],
+
+        //or
+        fields: {
+            name: null,
+            posts: {
+                children: {
+                    title: null
+                }
+            }
+        }
+    }
+})
+
+//or we can create new Fragment
+let newFragment = new Fragment({
+    name: 'some_unique_name',
+    table: 'user',
+    fields: `
+        name
+        posts {
+            title
+        }
+    `//any from abobe
+})
+var [err, response] = orm.query({
+    user: {
+        fragment: newFragment
+    }
+})
+
+//or even better, we can extend user fragments and use it anytime
+orm.table('user').createFragment('some_unique_name', `
+    name
+    posts {
+        title
+    }
+`)
+var [err, response] = orm.query({
+    user: {
+        fragment: 'some_unique_name'
+    }
+})
+
+//of course we can use other fragments to create new one
+let baseUserFragment = orm.table('user').fragment('base')
+let basePostFragment = orm.table('post').fragment('base')
+
+orm.table('user').createFragment('some_unique_name', [
+    baseUserFragment.gqlFields(),
+    {
+        key: 'posts',
+        values: [
+            basePostFragment.gqlFields(),
+        ]
+    }
+])
+```

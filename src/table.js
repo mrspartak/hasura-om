@@ -18,6 +18,12 @@ class Table {
 		this.fragments = {};
 	}
 
+	field(name) {
+		if (typeof this.fields[name] == 'undefined') throw new Error(`field ${name} not found`);
+
+		return this.fields[name];
+	}
+
 	setField(params) {
 		if (!params.name) throw new Error('name is required');
 		if (!params.type) throw new Error('type is required');
@@ -33,6 +39,12 @@ class Table {
 
 	init() {
 		this.createFragment();
+	}
+
+	fragment(name) {
+		if (typeof this.fragments[name] == 'undefined') throw new Error(`fragment ${name} not found`);
+
+		return this.fragments[name];
 	}
 
 	createFragment(name = 'base', fields = false) {

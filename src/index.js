@@ -90,6 +90,12 @@ class Hasura {
 		this.INITIATED = true;
 	}
 
+	table(name) {
+		if (typeof this.tables[name] == 'undefined') throw new Error(`table ${name} not found`);
+
+		return this.tables[name];
+	}
+
 	/* 
         {
             [table_name]: {
