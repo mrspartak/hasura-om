@@ -38,6 +38,39 @@ test.serial('delete all records', async (t) => {
 
 	t.is(typeof response._om_test.delete, 'object');
 	t.is(typeof response._om_test_types.delete, 'object');
+
+	//ensure that no rows exist
+	var [err, response] = await orm.query({
+		_om_test: {},
+		_om_test_types: {},
+	});
+	if (err) throw err;
+
+	t.is(response._om_test.length, 0);
+	t.is(response._om_test_types.length, 0);
+});
+
+test.serial('test option flatOne', async (t) => {
+	let orm = t.context.orm;
+
+	var [err, response] = await orm.query({
+		_om_test: {},
+	});
+	if (err) throw err;
+
+	t.is(response.length, 0);
+
+	var [err, response] = await orm.query(
+		{
+			_om_test: {},
+		},
+		{
+			flatOne: false,
+		},
+	);
+	if (err) throw err;
+
+	t.is(response._om_test.length, 0);
 });
 
 test.serial('add records with transaction', async (t) => {

@@ -1,6 +1,11 @@
 # Hasura object mapping library
 ![Node.js Package](https://github.com/mrspartak/hasura-om/workflows/Node.js%20Package/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/mrspartak/hasura-om/badge.svg?branch=master)](https://coveralls.io/github/mrspartak/hasura-om?branch=master)
 
+# Instalation
+```
+npm i hasura-om
+```
+
 # A problem
 We have a microservice infrastructure and need cross-service transactions. One way to do it is to send a graphql query + variables to one service and perform a query there. So this library helps to send more standardized data via JS Objects.
 If you know a better way to solve this problem, you are welcome to issues or email.
@@ -13,6 +18,8 @@ const om = new Hasura({
     graphqlUrl: 'your hasura endpoint',
     adminSecret: 'your hasura admin secret'
 })
+//this command loads data from Hasura about tables/fields/keys to build base table fragments for simple queries
+await om.init()
 
 //query 
 let [err, result] = om.query({
