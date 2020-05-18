@@ -121,9 +121,11 @@ class Table {
 			}
 		});
 
+		//building for query or subscription
+		let queryLiteral = params.queryType == 'query' ? 'Q' : 'S';
 		return {
 			query: {
-				name: `Q${this.params.name}`,
+				name: `${queryLiteral}_${this.params.name}`,
 				variables: query_variables,
 				fields: `
                     ${this.params.name} ${query_field_variables.length ? '(' + query_field_variables.join(', ') + ')' : ''} {

@@ -113,6 +113,35 @@ result = {
     }
 } 
 */
+
+
+//subscription
+let unsub = om.subscribe({
+    user: {
+        where: {
+            is_live: {
+                _eq: true
+            }
+        },
+        limit: 10,
+        order_by: {
+            rating: 'desc'
+        }
+    },
+    pets: {
+        where: {
+            type: {
+                _eq: 'dog'
+            }
+        },
+        fields: `
+            id
+            name
+        `
+    }
+}, ([err, data]) => {
+    //so data will come in the same format as the query
+})
 ```
 
 The only control you have is fragments. So this library provides base fragments with all table fields without relations. Of course you need them, so you have many ways to do so.

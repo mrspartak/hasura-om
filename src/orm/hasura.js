@@ -1,5 +1,6 @@
 const Sql = require('../hasura/sql');
 const Gql = require('../hasura/gql');
+const WsGql = require('../hasura/wsgql');
 const Table = require('./table');
 const __ = require('../utils/helpers');
 
@@ -8,6 +9,7 @@ class Hasura {
 		const defaultParams = {
 			graphqlUrl: null,
 			queryUrl: null,
+			wsUrl: null,
 			adminSecret: null,
 		};
 		this.params = Object.assign({}, defaultParams, params);
@@ -18,9 +20,11 @@ class Hasura {
 		if (!this.params.adminSecret) throw new Error('adminSecret is required');
 
 		if (!this.params.queryUrl) this.params.queryUrl = this.params.graphqlUrl.replace('/v1/graphql', '/v1/query');
+		if (!this.params.wsUrl) this.params.wsUrl = this.params.graphqlUrl.replace('http://', 'ws://').replace('https://', 'wss://');
 
 		this.$sql = new Sql(this.params);
 		this.$gql = new Gql(this.params);
+		this.$ws = new WsGql(this.params);
 
 		this.INITIATED = false;
 		this.tables = {};
@@ -132,7 +136,7 @@ class Hasura {
 		return [null, response];
 	}
 
-	buildQuery(params) {
+	buildQuery(params, queryType = 'query') {
 		let tables = Object.keys(params);
 
 		let queryName = [],
@@ -143,9 +147,10 @@ class Hasura {
 
 		let builds = [];
 		tables.forEach((tableName) => {
-			let built = this.tables[tableName].buildQuery({
+			let built = this.table(tableName).buildQuery({
 				...params[tableName],
 				tableName,
+				queryType,
 			});
 
 			queryName.push(built.query.name);
@@ -157,7 +162,7 @@ class Hasura {
 
 		let query = `
             ${Object.values(queryFragments).join('\n')}
-            query ${queryName.join('_')} ${queryVariables.length ? '(' + queryVariables.join(', ') + ')' : ''} {
+            ${queryType} ${queryName.join('_')} ${queryVariables.length ? '(' + queryVariables.join(', ') + ')' : ''} {
                 ${queryFields.join('\n')}
             }
         `;
@@ -258,6 +263,25 @@ class Hasura {
         `;
 
 		return [query, variables, queryFlatSetting];
+	}
+
+	subscribe(params, callback, { flatOne = true } = {}) {
+		try {
+			var [query, variables] = this.buildQuery(params, 'subscription');
+		} catch (err) {
+			return [err];
+		}
+
+		var unsub = this.$ws.run({
+			query,
+			variables,
+			callback,
+			settings: {
+				flatOne: Object.keys(params).length == 1 && flatOne ? Object.keys(params)[0] : false,
+			},
+		});
+
+		return unsub; //unsubscribe
 	}
 }
 

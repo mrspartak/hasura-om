@@ -27,7 +27,9 @@
     }
   },
   "dependencies": {
-    "axios": "^0.19.2"
+    "axios": "^0.19.2",
+    "subscriptions-transport-ws": "^0.9.16",
+    "ws": "^7.3.0"
   },
   "devDependencies": {
     "ava": "^3.8.2",
