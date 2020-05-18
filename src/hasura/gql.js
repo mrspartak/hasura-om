@@ -1,5 +1,5 @@
 const axios = require('axios');
-const __ = require('./utils/helpers');
+const __ = require('../utils/helpers');
 
 class Gql {
 	constructor(params) {

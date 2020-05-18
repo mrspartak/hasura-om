@@ -14,7 +14,11 @@ exports.asyncForEach = async function (array, callback) {
 };
 
 exports.objectFromPath = function (obj, path, value = null) {
-	path = typeof path === 'string' ? path.split('.') : path;
+	if (typeof path === 'string') path = path.split('.');
+	if (!Array.isArray(path)) throw new Error('path should be type of string or array');
+
+	if (Object.prototype.toString.call(obj) != '[object Object]') throw new Error('obj should be an object');
+
 	let current = obj;
 	while (path.length > 1) {
 		const [head, ...tail] = path;

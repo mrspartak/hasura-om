@@ -1,4 +1,4 @@
-const { fieldsToGql } = require('./fields');
+const { fieldsToGql } = require('../utils/builders');
 
 class Fragment {
 	constructor(params) {
@@ -11,6 +11,7 @@ class Fragment {
 		this.params = Object.assign({}, defaultParams, params);
 
 		if (!this.params.table) throw new Error('table is required');
+		if (Object.keys(this.params.fields).length == 0) throw new Error('fields are required');
 
 		this._gqlFields = fieldsToGql(this.params.fields);
 	}

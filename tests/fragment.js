@@ -1,27 +1,49 @@
 const test = require('ava');
-const Fragment = require('../src/gql/fragment');
+const { Fragment } = require('../src/');
 import gql from 'graphql-tag';
 gql.disableFragmentWarnings();
 
-test('define new fragment', (t) => {
-	let fragment = new Fragment({
-		table: 'test',
-	});
-	t.pass();
+test('wrong fragment define', (t) => {
+	t.throws(
+		() => {
+			return new Fragment();
+		},
+		{ instanceOf: Error },
+	);
+
+	t.throws(
+		() => {
+			return new Fragment({
+				name: '123',
+			});
+		},
+		{ instanceOf: Error },
+	);
+
+	t.throws(
+		() => {
+			return new Fragment({
+				name: '123',
+				table: 'test',
+			});
+		},
+		{ instanceOf: Error },
+	);
 });
 
-test('define empty fragment', (t) => {
-	try {
-		let fragment = new Fragment();
-		t.fail(new Error('should fail without required fields'));
-	} catch (err) {
-		t.pass();
-	}
+test('succesful contructor', (t) => {
+	let fragment = new Fragment({
+		table: 'test',
+		fields: ['id'],
+	});
+
+	t.true(fragment instanceof Fragment);
 });
 
 test('getting fragment name', (t) => {
 	let fragment = new Fragment({
 		table: 'test',
+		fields: ['id'],
 	});
 
 	//right naming using table and fragment names

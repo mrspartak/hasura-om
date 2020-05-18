@@ -1,5 +1,6 @@
-const Fragment = require('./gql/fragment');
-const { fieldsToGql } = require('./gql/fields');
+const Fragment = require('./fragment');
+const Field = require('./field');
+const { fieldsToGql } = require('../utils/builders');
 
 class Table {
 	constructor(params) {
@@ -11,11 +12,13 @@ class Table {
 		this.params = Object.assign({}, defaultParams, params);
 
 		if (!this.params.name) throw new Error('name is required');
-		if (!this.params.type) throw new Error('type is required');
 
 		this.fields = {};
-		this.pkeys = {};
 		this.fragments = {};
+	}
+
+	init() {
+		this.createFragment('base');
 	}
 
 	field(name) {
@@ -25,20 +28,18 @@ class Table {
 	}
 
 	setField(params) {
-		if (!params.name) throw new Error('name is required');
-		if (!params.type) throw new Error('type is required');
-
-		this.fields[params.name] = params;
+		this.fields[params.name] = new Field(params);
 	}
 
 	setPrimarykey(params) {
+		if (typeof params == 'string')
+			params = {
+				name: params,
+			};
+
 		if (!params.name) throw new Error('name is required');
 
-		this.pkeys[params.name] = params;
-	}
-
-	init() {
-		this.createFragment('base');
+		this.field(params.name).isPrimary = true;
 	}
 
 	fragment(name = 'base') {
@@ -48,7 +49,7 @@ class Table {
 	}
 
 	createFragment(name = 'base', fields = false) {
-		if (Object.keys(this.fields).length == 0 && !fields) return false;
+		if (Object.keys(this.fields).length == 0 && !fields) throw new Error(`No fields found to create fragment`);
 
 		this.fragments[name] = new Fragment({
 			table: this.params.name,

@@ -11,21 +11,11 @@ test('throws without params', (t) => {
 		},
 		{ instanceOf: Error },
 	);
-
-	t.throws(
-		() => {
-			const orm = new Table({
-				name: 'ufhreioor',
-			});
-		},
-		{ instanceOf: Error },
-	);
 });
 
 test('succesful contructor', (t) => {
 	let table = new Table({
 		name: 'test',
-		type: 'BASE TABLE',
 	});
 
 	t.true(table instanceof Table);
@@ -34,7 +24,6 @@ test('succesful contructor', (t) => {
 test('throws adding field', (t) => {
 	let table = new Table({
 		name: 'test',
-		type: 'BASE TABLE',
 	});
 
 	t.throws(
@@ -48,7 +37,6 @@ test('throws adding field', (t) => {
 test('succesfuly add field', (t) => {
 	let table = new Table({
 		name: 'test',
-		type: 'BASE TABLE',
 	});
 
 	table.setField({
@@ -62,7 +50,6 @@ test('succesfuly add field', (t) => {
 test('field not found', (t) => {
 	let table = new Table({
 		name: 'test',
-		type: 'BASE TABLE',
 	});
 
 	t.throws(
@@ -73,23 +60,56 @@ test('field not found', (t) => {
 	);
 });
 
-test('fragment not found', (t) => {
+test('testing primary key', (t) => {
 	let table = new Table({
 		name: 'test',
-		type: 'BASE TABLE',
+	});
+
+	table.setField({
+		name: 'test',
 	});
 
 	t.throws(
 		() => {
-			table.fragment('test');
+			table.setPrimarykey();
+		},
+		{ instanceOf: Error },
+	);
+	t.throws(
+		() => {
+			table.setPrimarykey('field_not_exist');
+		},
+		{ instanceOf: Error },
+	);
+	t.throws(
+		() => {
+			table.setPrimarykey({ some_other_key: 'test' });
 		},
 		{ instanceOf: Error },
 	);
 
-	/* 
-		Note! Will not create fragment without fields
-	*/
-	table.createFragment('base');
+	table.setPrimarykey('test');
+	t.is(table.field('test').isPrimary, true);
+});
+
+test('throws creating fragment', (t) => {
+	let table = new Table({
+		name: 'test',
+	});
+
+	t.throws(
+		() => {
+			table.createFragment();
+		},
+		{ instanceOf: Error },
+	);
+});
+
+test('fragment not found', (t) => {
+	let table = new Table({
+		name: 'test',
+	});
+
 	t.throws(
 		() => {
 			table.fragment('test');
@@ -101,7 +121,6 @@ test('fragment not found', (t) => {
 test('fragment found', (t) => {
 	let table = new Table({
 		name: 'test',
-		type: 'BASE TABLE',
 	});
 	table.setField({
 		name: 'id',
@@ -123,7 +142,6 @@ test('fragment found', (t) => {
 test('build fields for query', (t) => {
 	let table = new Table({
 		name: 'test',
-		type: 'BASE TABLE',
 	});
 	table.setField({
 		name: 'id',
