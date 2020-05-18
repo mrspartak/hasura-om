@@ -1,6 +1,6 @@
 require('dotenv').config();
 const test = require('ava');
-const { Hasura } = require('../src/');
+const { Hasura, Table } = require('../src/');
 
 test('throws without params', (t) => {
 	t.throws(
@@ -9,9 +9,7 @@ test('throws without params', (t) => {
 		},
 		{ instanceOf: Error },
 	);
-});
 
-test('still throws without params', (t) => {
 	t.throws(
 		() => {
 			const orm = new Hasura({
@@ -20,9 +18,7 @@ test('still throws without params', (t) => {
 		},
 		{ instanceOf: Error },
 	);
-});
 
-test('graphqlUrl is not an url', (t) => {
 	t.throws(
 		() => {
 			const orm = new Hasura({
@@ -31,4 +27,40 @@ test('graphqlUrl is not an url', (t) => {
 		},
 		{ instanceOf: Error },
 	);
+});
+
+test('succesful contructor', (t) => {
+	let orm = new Hasura({
+		graphqlUrl: 'efwehfwiefjwopeif',
+		adminSecret: 'qwdqwdqwdqwd',
+	});
+
+	t.true(orm instanceof Hasura);
+});
+
+test('getting table', (t) => {
+	let orm = new Hasura({
+		graphqlUrl: 'efwehfwiefjwopeif',
+		adminSecret: 'qwdqwdqwdqwd',
+	});
+
+	t.throws(
+		() => {
+			orm.table('do_not_exist');
+		},
+		{ instanceOf: Error },
+	);
+
+	t.throws(
+		() => {
+			orm.createTable();
+		},
+		{ instanceOf: Error },
+	);
+
+	orm.createTable({
+		name: 'test',
+		type: 'BASE TABLE',
+	});
+	t.true(orm.table('test') instanceof Table);
 });

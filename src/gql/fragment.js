@@ -19,9 +19,9 @@ class Fragment {
 		return this._gqlFields;
 	}
 
-	toString() {
+	build() {
 		let fragmentName = `${this.params.name}_fragment_${this.params.table}`;
-		let fields = this._gqlFields;
+		let fields = this.gqlFields();
 
 		return {
 			name: fragmentName,

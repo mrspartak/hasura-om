@@ -38,21 +38,24 @@ class Table {
 	}
 
 	init() {
-		this.createFragment();
+		this.createFragment('base');
 	}
 
-	fragment(name) {
+	fragment(name = 'base') {
 		if (typeof this.fragments[name] == 'undefined') throw new Error(`fragment ${name} not found`);
 
 		return this.fragments[name];
 	}
 
 	createFragment(name = 'base', fields = false) {
+		if (Object.keys(this.fields).length == 0 && !fields) return false;
+
 		this.fragments[name] = new Fragment({
 			table: this.params.name,
 			name,
 			fields: fields ? fields : this.fields,
 		});
+		return this.fragments[name];
 	}
 
 	/* 
@@ -325,29 +328,17 @@ class Table {
 			fragmentName = '';
 		let fields = params.fields ? fieldsToGql(params.fields) : false;
 		if (!fields) {
-			if (params.fragment) {
-				if (params.fragment instanceof Fragment) {
-					let fragmentObject = params.fragment.toString();
-					fragment = fragmentObject.raw;
-					fragmentName = fragmentObject.name;
-					fields = `...${fragmentObject.name}`;
-				} else if (typeof this.fragments[params.fragment] != 'undefined') {
-					let fragmentObject = this.fragments[params.fragment].toString();
-					fragment = fragmentObject.raw;
-					fragmentName = fragmentObject.name;
-					fields = `...${fragmentObject.name}`;
-				} else {
-					let fragmentObject = this.fragments.base.toString();
-					fragment = fragmentObject.raw;
-					fragmentName = fragmentObject.name;
-					fields = `...${fragmentObject.name}`;
-				}
-			} else {
-				let fragmentObject = this.fragments.base.toString();
-				fragment = fragmentObject.raw;
-				fragmentName = fragmentObject.name;
-				fields = `...${fragmentObject.name}`;
-			}
+			let fInstance = null;
+			if (typeof params.fragment == 'string') fInstance = this.fragment(params.fragment);
+			else if (params.fragment instanceof Fragment) fInstance = params.fragment;
+			else fInstance = this.fragment('base');
+
+			if (!fInstance) throw new Error('table do not contain any fragment');
+
+			let fragmentObject = fInstance.build();
+			fragment = fragmentObject.raw;
+			fragmentName = fragmentObject.name;
+			fields = `...${fragmentObject.name}`;
 		}
 		if (!fields) throw new Error('no returning fields specified');
 

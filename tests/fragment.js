@@ -25,12 +25,12 @@ test('getting fragment name', (t) => {
 	});
 
 	//right naming using table and fragment names
-	var { name } = fragment.toString();
+	var { name } = fragment.build();
 	t.is(name, 'base_fragment_test');
 
 	fragment.params.table = 'test2';
 	fragment.params.name = 'new';
-	var { name } = fragment.toString();
+	var { name } = fragment.build();
 	t.is(name, 'new_fragment_test2');
 });
 
@@ -57,7 +57,7 @@ test('checking fragment decalration', (t) => {
 			},
 		],
 	});
-	var { raw } = fragment.toString();
+	var { raw } = fragment.build();
 	t.deepEqual(gql(raw), testFragment);
 
 	//declaring fileds with string
@@ -71,7 +71,7 @@ test('checking fragment decalration', (t) => {
             }
         `,
 	});
-	var { raw } = fragment.toString();
+	var { raw } = fragment.build();
 	t.deepEqual(gql(raw), testFragment);
 
 	//declaring fileds with object
@@ -85,7 +85,7 @@ test('checking fragment decalration', (t) => {
 			},
 		},
 	});
-	var { raw } = fragment.toString();
+	var { raw } = fragment.build();
 	t.deepEqual(gql(raw), testFragment);
 });
 
@@ -143,7 +143,7 @@ test('checking big declaration', (t) => {
 			},
 		],
 	});
-	var { raw } = fragment.toString();
+	var { raw } = fragment.build();
 	t.deepEqual(gql(raw), testFragment);
 });
 
@@ -207,4 +207,65 @@ test('check for incopatable fields format', (t) => {
 		},
 		{ instanceOf: Error },
 	);
+});
+
+test('check extension', (t) => {
+	const testFragment = gql`
+		fragment main_fragment_test on test {
+			id
+			name
+			logo {
+				host
+				path
+			}
+		}
+	`;
+
+	let baseTestFragment = new Fragment({
+		name: 'base',
+		table: 'test',
+		fields: ['id', 'name'],
+	});
+	let baseLogoFragment = new Fragment({
+		name: 'base',
+		table: 'logo',
+		fields: ['host', 'path'],
+	});
+
+	var mainFragment = new Fragment({
+		name: 'main',
+		table: 'test',
+		fields: [
+			baseTestFragment.gqlFields(),
+			{
+				key: 'logo',
+				values: baseLogoFragment.gqlFields(),
+			},
+		],
+	});
+	var { raw } = mainFragment.build();
+	t.deepEqual(gql(raw), testFragment);
+
+	var mainFragment = new Fragment({
+		name: 'main',
+		table: 'test',
+		fields: `
+			${baseTestFragment.gqlFields()}
+			logo {
+				${baseLogoFragment.gqlFields()}
+			}
+		`,
+	});
+	var { raw } = mainFragment.build();
+	t.deepEqual(gql(raw), testFragment);
+});
+
+test('check gqlFields function', (t) => {
+	let baseTestFragment = new Fragment({
+		name: 'base',
+		table: 'test',
+		fields: ['id', 'name'],
+	});
+
+	t.is(typeof baseTestFragment.gqlFields(), 'string');
 });

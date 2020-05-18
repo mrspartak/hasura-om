@@ -37,7 +37,7 @@ class Hasura {
 		if (err) throw err;
 
 		data.forEach((row) => {
-			this.tables[row.table_name] = new Table({
+			this.createTable({
 				name: row.table_name,
 				type: row.table_type,
 			});
@@ -52,7 +52,7 @@ class Hasura {
 		if (err) throw err;
 
 		data.forEach((row) => {
-			this.tables[row.table_name].setField({
+			this.table(row.table_name).setField({
 				name: row.column_name,
 				type: row.data_type,
 				udt: row.udt_name,
@@ -77,14 +77,14 @@ class Hasura {
 		if (err) throw err;
 
 		data.forEach((row) => {
-			this.tables[row.table_name].setPrimarykey({
+			this.table(row.table_name).setPrimarykey({
 				name: row.key_column,
 				position: row.position,
 			});
 		});
 
 		Object.keys(this.tables).forEach((tableName) => {
-			this.tables[tableName].init();
+			this.table(tableName).init();
 		});
 
 		this.INITIATED = true;
@@ -94,6 +94,10 @@ class Hasura {
 		if (typeof this.tables[name] == 'undefined') throw new Error(`table ${name} not found`);
 
 		return this.tables[name];
+	}
+
+	createTable({ name, type } = {}) {
+		this.tables[name] = new Table({ name, type });
 	}
 
 	/* 

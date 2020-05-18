@@ -4,8 +4,8 @@
   "description": "Hasura object mapping",
   "main": "src/index.js",
   "scripts": {
-    "test": "nyc  --reporter=html --reporter=lcovonly ava",
-    "test_dev": "nyc --reporter=html --reporter=text ava --watch",
+    "test": "nyc  --reporter=html --reporter=lcovonly ava --verbose",
+    "test_dev": "nyc --reporter=html --reporter=text ava --watch --verbose",
     "release": "npm-github-release",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
@@ -17,7 +17,9 @@
     ],
     "require": [
       "esm"
-    ]
+    ],
+    "failWithoutAssertions": false,
+    "concurrency": 16
   },
   "husky": {
     "hooks": {
