@@ -58,7 +58,7 @@ test.serial('test option flatOne', async (t) => {
 	});
 	if (err) throw err;
 
-	t.is(response.length, 0);
+	t.true(Array.isArray(response));
 
 	var [err, response] = await orm.query(
 		{
@@ -70,7 +70,7 @@ test.serial('test option flatOne', async (t) => {
 	);
 	if (err) throw err;
 
-	t.is(response._om_test.length, 0);
+	t.true(Array.isArray(response._om_test));
 });
 
 test.serial('add records with transaction', async (t) => {
