@@ -67,7 +67,7 @@ test('checking fragment decalration', (t) => {
 		}
 	`;
 
-	//declaring fileds with array
+	//declaring fields with array
 	var fragment = new Fragment({
 		table: 'test',
 		fields: [
@@ -78,6 +78,14 @@ test('checking fragment decalration', (t) => {
 				values: ['url'],
 			},
 		],
+	});
+	var { raw } = fragment.build();
+	t.deepEqual(gql(raw), testFragment);
+
+	//declaring fields with array 2nd way
+	var fragment = new Fragment({
+		table: 'test',
+		fields: ['id', 'name', ['logo', ['url']]],
 	});
 	var { raw } = fragment.build();
 	t.deepEqual(gql(raw), testFragment);

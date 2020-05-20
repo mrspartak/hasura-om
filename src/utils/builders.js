@@ -8,6 +8,13 @@ fields can be
 
     array: [
         'id',
+        [
+            'logo',
+            [
+                'id'
+            ]
+        ]
+        or
         {
             key: 'logo',
             values: [
@@ -33,8 +40,16 @@ exports.fieldsToGql = function (input) {
 	else if (Array.isArray(input)) {
 		input.forEach((el) => {
 			if (typeof el == 'string') baseArray.push(el);
-			else if (Array.isArray(el)) throw new Error('array cant contain array');
-			else if (typeof el == 'object') {
+			else if (Array.isArray(el)) {
+				if (typeof el[0] != 'string' || !Array.isArray(el[1])) throw new Error('array should contain exactly 2 values, key and children array');
+
+				let subFragment = exports.fieldsToGql(el[1]);
+				baseArray.push(`
+                    ${el[0]} {
+                        ${subFragment}
+                    }
+                `);
+			} else if (typeof el == 'object') {
 				if (typeof el.key == 'undefined' || typeof el.values == 'undefined') throw new Error('in array object must have keys: `key` & `values`');
 
 				let subFragment = exports.fieldsToGql(el.values);

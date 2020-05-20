@@ -77,4 +77,18 @@ test('test gql field builder', (t) => {
 		},
 		{ instanceOf: Error },
 	);
+
+	t.throws(
+		() => {
+			builders.fieldsToGql(['id', ['logo']]);
+		},
+		{ instanceOf: Error },
+	);
+
+	t.throws(
+		() => {
+			builders.fieldsToGql(['id', ['id', [{ id: {} }]]]);
+		},
+		{ instanceOf: Error },
+	);
 });
