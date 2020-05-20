@@ -9,6 +9,11 @@ class Gql {
 		};
 		this.params = Object.assign({}, defaultParams, params);
 
+		if (!this.params.graphqlUrl) throw new Error('graphqlUrl is required');
+		if (typeof this.params.graphqlUrl != 'string') throw new Error('graphqlUrl must be Url format');
+
+		if (!this.params.adminSecret) throw new Error('adminSecret is required');
+
 		this.$http = axios.create({
 			baseURL: this.params.graphqlUrl,
 			headers: {
@@ -20,7 +25,7 @@ class Gql {
 		});
 	}
 
-	async run({ query, variables } = {}) {
+	async run({ query, variables }) {
 		var [err, { data } = {}] = await __.to(
 			this.$http.request({
 				method: 'POST',

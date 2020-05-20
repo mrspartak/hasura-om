@@ -12,6 +12,11 @@ class WsGql {
 		};
 		this.params = Object.assign({}, defaultParams, params);
 
+		if (!this.params.wsUrl) throw new Error('wsUrl is required');
+		if (typeof this.params.wsUrl != 'string') throw new Error('wsUrl must be Url format');
+
+		if (!this.params.adminSecret) throw new Error('adminSecret is required');
+
 		this.client = new SubscriptionClient(
 			this.params.wsUrl,
 			{
@@ -47,7 +52,10 @@ class WsGql {
         }) */
 	}
 
-	async run({ query, variables, callback, settings } = {}) {
+	run({ query, variables, callback, settings = {} }) {
+		if (typeof query != 'string') throw new Error('query must be a string');
+		if (typeof callback != 'function') throw new Error('callback must be a function');
+
 		let { subscribe } = this.client.request({
 			query,
 			variables,
