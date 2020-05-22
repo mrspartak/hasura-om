@@ -31,3 +31,35 @@ exports.objectFromPath = function (obj, path, value = null) {
 	current[path[0]] = value;
 	return obj;
 };
+
+/**
+ * Deep merge two objects.
+ * @param target
+ * @param ...sources
+ */
+exports.mergeDeep = function (target, ...sources) {
+	if (!sources.length) return target;
+	const source = sources.shift();
+
+	if (exports.isObject(target) && exports.isObject(source)) {
+		for (const key in source) {
+			if (exports.isObject(source[key])) {
+				if (!target[key]) Object.assign(target, { [key]: {} });
+				exports.mergeDeep(target[key], source[key]);
+			} else {
+				Object.assign(target, { [key]: source[key] });
+			}
+		}
+	}
+
+	return exports.mergeDeep(target, ...sources);
+};
+
+/**
+ * Simple object check.
+ * @param item
+ * @returns {boolean}
+ */
+exports.isObject = function (item) {
+	return item && typeof item === 'object' && !Array.isArray(item);
+};

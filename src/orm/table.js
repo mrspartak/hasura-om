@@ -18,7 +18,12 @@ class Table {
 	}
 
 	init() {
-		this.createFragment('base');
+		this.createFragment('base', this.fields);
+
+		let pkeys = Object.keys(this.fields)
+			.filter((key) => this.field(key).isPrimary)
+			.reduce((res, key) => ((res[key] = this.field(key)), res), {});
+		if (Object.keys(pkeys).length) this.createFragment('pk', pkeys);
 	}
 
 	field(name) {
@@ -43,13 +48,13 @@ class Table {
 	}
 
 	fragment(name = 'base') {
-		if (typeof this.fragments[name] == 'undefined') throw new Error(`fragment ${name} not found`);
+		if (typeof this.fragments[name] == 'undefined') return false;
 
 		return this.fragments[name];
 	}
 
 	createFragment(name = 'base', fields = false) {
-		if (Object.keys(this.fields).length == 0 && !fields) throw new Error(`No fields found to create fragment`);
+		if (Object.keys(this.fields).length == 0 || !fields) throw new Error(`No fields found to create fragment`);
 
 		this.fragments[name] = new Fragment({
 			table: this.params.name,

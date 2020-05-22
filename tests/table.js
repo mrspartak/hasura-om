@@ -110,12 +110,7 @@ test('fragment not found', (t) => {
 		name: 'test',
 	});
 
-	t.throws(
-		() => {
-			table.fragment('test');
-		},
-		{ instanceOf: Error },
-	);
+	t.is(table.fragment('test'), false);
 });
 
 test('fragment found', (t) => {
@@ -126,9 +121,15 @@ test('fragment found', (t) => {
 		name: 'id',
 		type: 'Integer',
 	});
-	table.createFragment('base');
+	table.init();
 
 	t.true(table.fragment('base') instanceof Fragment);
+	t.is(table.fragment('pk'), false);
+
+	table.field('id').isPrimary = true;
+	table.init();
+
+	t.true(table.fragment('pk') instanceof Fragment);
 
 	const testFragment = gql`
 		fragment base_fragment_test on test {

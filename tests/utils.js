@@ -70,6 +70,15 @@ test('objectFromPath', (t) => {
 	);
 });
 
+test('deepmerge', (t) => {
+	t.deepEqual(__.mergeDeep({ a: 2 }), { a: 2 });
+	t.deepEqual(__.mergeDeep({ a: 2 }, { a: 3 }), { a: 3 });
+	t.deepEqual(__.mergeDeep({ a: 1 }, { b: 2 }, { c: 3 }), { a: 1, b: 2, c: 3 });
+	t.deepEqual(__.mergeDeep({ a: 1 }, 'acs'), { a: 1 });
+	t.deepEqual(__.mergeDeep({}, { a: 1 }), { a: 1 });
+	t.deepEqual(__.mergeDeep({}, { a: 1, b: { c: 2 } }, { b: { d: 4 } }), { a: 1, b: { c: 2, d: 4 } });
+});
+
 test('test gql field builder', (t) => {
 	t.throws(
 		() => {

@@ -18,7 +18,15 @@ const om = new Hasura({
     graphqlUrl: 'your hasura endpoint',
     adminSecret: 'your hasura admin secret'
 })
-//this command loads data from Hasura about tables/fields/keys to build base table fragments for simple queries
+/*
+    this command loads data from Hasura about tables/fields/keys 
+    to build base table fragments for simple queries
+    So the fragments are:
+        -base 
+            All table fields
+        -pk
+            Only primary keys
+*/
 await om.init()
 
 //query 
@@ -98,7 +106,8 @@ let [err, result] = om.mutate({
                 user_id: 666,
                 type: 'deposit',
                 amount: 100
-            }
+            },
+            fragment: 'pk'
         }
     }
 })
@@ -117,11 +126,7 @@ result = {
     wallet: {
         insert: [
             {
-                id: 1002,
-                user_id: 666,
-                type: 'deposit',
-                amount: 100
-                ...all_wallet_base_fields
+                id: 1002
             }
         ]
     }
