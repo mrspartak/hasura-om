@@ -101,7 +101,7 @@ test.serial('test sub', async (t) => {
 	});
 	if (err) throw err;
 
-	let id = response._om_test.insert[0].id;
+	let id = response[0].id;
 
 	var responseCount = 0;
 	return new Promise((resolve) => {
