@@ -40,14 +40,14 @@ test.serial('delete all records', async (t) => {
 	t.is(typeof response._om_test_types, 'object');
 
 	//ensure that no rows exist
-	var [err, response] = await orm.query({
+	/* var [err, response] = await orm.query({
 		_om_test: {},
 		_om_test_types: {},
 	});
 	if (err) throw err;
 
 	t.is(response._om_test.length, 0);
-	t.is(response._om_test_types.length, 0);
+	t.is(response._om_test_types.length, 0); */
 });
 
 test.serial('test option flatOne', async (t) => {
