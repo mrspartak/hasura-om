@@ -20,10 +20,13 @@ If you know a better way to solve this problem, you are welcome to issues or ema
 ## Warning! Full docs will come later
 
 ## Todo before basic release:
-- [] Nested queries
-- [] Hasura class extend EventEmitter
-- [] Refactor query builder code
-- [] Docs
+- [x] Fragment extending (v0.0.7)
+- [x] Subscriptions (v0.0.10)
+- [x] Aggregate queries (v0.0.12)
+- [ ] Nested queries
+- [ ] Hasura class extend EventEmitter
+- [ ] Refactor query builder code
+- [ ] Docs
 
 # Simple example
 ```javascript
