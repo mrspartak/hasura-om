@@ -29,6 +29,28 @@ test.serial('test first reply', (t) => {
 	});
 });
 
+test.serial('test aggregate', (t) => {
+	let orm = t.context.orm;
+
+	return new Promise((resolve) => {
+		let unsub = orm.subscribe(
+			{
+				_om_test: {
+					aggregate: {
+						count: {},
+					},
+				},
+			},
+			([err, data]) => {
+				t.is(err, null);
+				t.true(typeof data.count == 'number');
+
+				resolve();
+			},
+		);
+	});
+});
+
 test.serial('should throw an error', (t) => {
 	let orm = t.context.orm;
 

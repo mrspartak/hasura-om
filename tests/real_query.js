@@ -36,8 +36,8 @@ test.serial('delete all records', async (t) => {
 	});
 	if (err) throw err;
 
-	t.is(typeof response._om_test.delete, 'object');
-	t.is(typeof response._om_test_types.delete, 'object');
+	t.is(typeof response._om_test, 'object');
+	t.is(typeof response._om_test_types, 'object');
 
 	//ensure that no rows exist
 	var [err, response] = await orm.query({
@@ -106,10 +106,10 @@ test.serial('add records with transaction', async (t) => {
 	});
 	if (err) throw err;
 
-	t.is(response._om_test.insert[0].text, 'test');
-	t.is(response._om_test.insert[0].type, 'some_type');
+	t.is(response._om_test[0].text, 'test');
+	t.is(response._om_test[0].type, 'some_type');
 
-	t.is(response._om_test_types.insert[0].type, 'another_type');
+	t.is(response._om_test_types[0].type, 'another_type');
 });
 
 test.serial('return nested data with custom scheme', async (t) => {
@@ -142,7 +142,7 @@ test.serial('return nested data with custom scheme', async (t) => {
 		Note!
 		Relationship here is N - 1, so we directly accessing description
 	*/
-	t.is(response._om_test.insert[0].types.description, 'this is good type');
+	t.is(response[0].types.description, 'this is good type');
 });
 
 test.serial('insert and update', async (t) => {
@@ -175,12 +175,12 @@ test.serial('insert and update', async (t) => {
 	t.is(err, null);
 	t.is(typeof response, 'object');
 
-	t.is(response._om_test.insert[0].text, 'test 3');
-	t.is(response._om_test.insert[0].type, null);
+	t.is(response.insert[0].text, 'test 3');
+	t.is(response.insert[0].type, null);
 
-	t.is(response._om_test.update[0].type, 'some_type_2');
-	t.is(response._om_test.update[0].text, 'changed');
-	t.is(response._om_test.update[0].increment, 10);
+	t.is(response.update[0].type, 'some_type_2');
+	t.is(response.update[0].text, 'changed');
+	t.is(response.update[0].increment, 10);
 });
 
 test.serial('failing transaction', async (t) => {
@@ -242,4 +242,22 @@ test.serial('error building query', async (t) => {
 	});
 
 	t.true(err instanceof Error);
+});
+
+test.serial('simple add row', async (t) => {
+	let orm = t.context.orm;
+
+	var [err, response] = await orm.mutate({
+		_om_test: {
+			insert: {
+				objects: {
+					text: 'test 3',
+				},
+			},
+		},
+	});
+	if (err) throw err;
+
+	t.is(typeof response, 'object');
+	t.true(typeof response[0].id == 'number');
 });

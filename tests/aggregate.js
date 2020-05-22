@@ -23,7 +23,7 @@ test.serial('simple aggregate test', async (t) => {
 		},
 	});
 	if (err) throw err;
-	t.true(typeof response.aggregate.count == 'number');
+	t.true(typeof response.count == 'number');
 
 	//if only one table requested it will be flated by default
 	var [err, response] = await orm.query(
@@ -120,11 +120,11 @@ test.serial('aggregate query test', async (t) => {
 	});
 	if (err) throw err;
 
-	t.is(response.aggregate.count, 3);
-	t.is(response.aggregate.sum.increment, 18);
-	t.is(response.aggregate.min.increment, 3);
-	t.is(response.aggregate.max.increment, 10);
-	t.is(response.aggregate.avg.increment, 6);
+	t.is(response.count, 3);
+	t.is(response.sum.increment, 18);
+	t.is(response.min.increment, 3);
+	t.is(response.max.increment, 10);
+	t.is(response.avg.increment, 6);
 
 	/* 
 		count distinct test
@@ -146,5 +146,5 @@ test.serial('aggregate query test', async (t) => {
 	});
 	if (err) throw err;
 
-	t.is(response.aggregate.count, 1);
+	t.is(response.count, 1);
 });

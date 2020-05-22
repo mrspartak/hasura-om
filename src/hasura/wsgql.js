@@ -52,7 +52,7 @@ class WsGql {
         }) */
 	}
 
-	run({ query, variables, callback, settings = {} }) {
+	run({ query, variables, callback, settings = {}, flat = (data) => data }) {
 		if (typeof query != 'string') throw new Error('query must be a string');
 		if (typeof callback != 'function') throw new Error('callback must be a function');
 
@@ -63,7 +63,7 @@ class WsGql {
 
 		let { unsubscribe } = subscribe({
 			next(data) {
-				callback([null, settings.flatOne ? data.data[settings.flatOne] : data.data]);
+				callback([null, flat(data.data)]);
 			},
 			error(err) {
 				callback([err]);

@@ -11,8 +11,22 @@ class Hasura {
 			queryUrl: null,
 			wsUrl: null,
 			adminSecret: null,
+			query: {
+				/* 
+					tries to flat object parenting
+					user.select.[] -> []
+					user{select: [], aggregate: {}} -> {select: [], aggregate: {}}
+				*/
+				flatOne: true,
+			},
+			subscription: {
+				flatOne: true,
+			},
+			mutation: {
+				flatOne: true,
+			},
 		};
-		this.params = Object.assign({}, defaultParams, params);
+		this.params = __.mergeDeep({}, defaultParams, params);
 
 		if (!this.params.graphqlUrl) throw new Error('graphqlUrl is required');
 		if (typeof this.params.graphqlUrl != 'string') throw new Error('graphqlUrl must be Url format');
@@ -117,12 +131,14 @@ class Hasura {
             }
         }
     */
-	async query(params, { flatOne = true } = {}) {
+	async query(params, settings = {}) {
 		try {
 			var [query, variables, flatSettings] = this.buildQuery(params);
 		} catch (err) {
 			return [err];
 		}
+
+		settings = __.mergeDeep({}, this.params.query, settings);
 
 		var [err, response] = await this.$gql.run({
 			query,
@@ -130,26 +146,11 @@ class Hasura {
 		});
 		if (err) return [err];
 
-		let toReturn = {};
-		flatSettings.forEach((flat) => {
-			//with the request we pass flatSettings: { 'request_path': 'hasura_path' }
-			flat = Object.entries(flat)[0];
-
-			//getting Hasura's response by hasura_path
-			let value = flat[1].split('.').reduce((o, i) => o[i], response);
-
-			//creating new object by request_path and placing the result
-			__.objectFromPath(toReturn, flat[0], value);
-		});
-
-		Object.keys(toReturn).forEach((tableName) => {
-			if (Object.keys(toReturn[tableName]).length == 1 && typeof toReturn[tableName].select != 'undefined' && flatOne) toReturn[tableName] = toReturn[tableName].select;
-		});
-
-		//return flatten object
-		if (Object.keys(params).length == 1 && flatOne) {
-			toReturn = toReturn[Object.keys(params)[0]];
-		}
+		let toReturn = this.flatGqlResponse({
+			flatSettings,
+			settings,
+			params,
+		})(response);
 
 		return [null, toReturn];
 	}
@@ -224,12 +225,14 @@ class Hasura {
             }
         }
     */
-	async mutate(params) {
+	async mutate(params, settings = {}) {
 		try {
 			var [query, variables, flatSettings] = this.buildMutation(params);
 		} catch (err) {
 			return [err];
 		}
+
+		settings = __.mergeDeep({}, this.params.mutation, settings);
 
 		var [err, response] = await this.$gql.run({
 			query,
@@ -237,21 +240,11 @@ class Hasura {
 		});
 		if (err) return [err];
 
-		/* 
-			Here we change routes from hasura's default return. 
-			For example we call user.insert and getting back insert_user.returning so we change paths like we call it earlier
-		*/
-		let toReturn = {};
-		flatSettings.forEach((flat) => {
-			//with the request we pass flatSettings: { 'request_path': 'hasura_path' }
-			flat = Object.entries(flat)[0];
-
-			//getting Hasura's response by hasura_path
-			let value = flat[1].split('.').reduce((o, i) => o[i], response);
-
-			//creating new object by request_path and placing the result
-			__.objectFromPath(toReturn, flat[0], value);
-		});
+		let toReturn = this.flatGqlResponse({
+			flatSettings,
+			settings,
+			params,
+		})(response);
 
 		return [null, toReturn];
 	}
@@ -293,23 +286,57 @@ class Hasura {
 		return [query, variables, queryFlatSetting];
 	}
 
-	subscribe(params, callback, { flatOne = true } = {}) {
+	subscribe(params, callback, settings = {}) {
 		try {
-			var [query, variables] = this.buildQuery(params, 'subscription');
+			var [query, variables, flatSettings] = this.buildQuery(params, 'subscription');
 		} catch (err) {
 			return [err];
 		}
+
+		settings = __.mergeDeep({}, this.params.query, settings);
+
+		let flat = this.flatGqlResponse({
+			flatSettings,
+			settings,
+			params,
+		});
 
 		var unsub = this.$ws.run({
 			query,
 			variables,
 			callback,
-			settings: {
-				flatOne: Object.keys(params).length == 1 && flatOne ? Object.keys(params)[0] : false,
-			},
+			flat,
 		});
 
 		return unsub; //unsubscribe
+	}
+
+	flatGqlResponse({ flatSettings, settings, params }) {
+		return function (response) {
+			let toReturn = {};
+
+			flatSettings.forEach((flat) => {
+				//with the request we pass flatSettings: { 'request_path': 'hasura_path' }
+				flat = Object.entries(flat)[0];
+
+				//getting Hasura's response by hasura_path
+				let value = flat[1].split('.').reduce((o, i) => o[i], response);
+
+				//creating new object by request_path and placing the result
+				__.objectFromPath(toReturn, flat[0], value);
+			});
+
+			Object.keys(toReturn).forEach((tableName) => {
+				if (Object.keys(toReturn[tableName]).length == 1 && settings.flatOne) toReturn[tableName] = toReturn[tableName][Object.keys(toReturn[tableName])[0]];
+			});
+
+			//return flatten object
+			if (Object.keys(params).length == 1 && settings.flatOne) {
+				toReturn = toReturn[Object.keys(params)[0]];
+			}
+
+			return toReturn;
+		};
 	}
 }
 
