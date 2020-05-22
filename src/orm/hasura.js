@@ -119,7 +119,7 @@ class Hasura {
     */
 	async query(params, { flatOne = true } = {}) {
 		try {
-			var [query, variables] = this.buildQuery(params);
+			var [query, variables, flatSettings] = this.buildQuery(params);
 		} catch (err) {
 			return [err];
 		}
@@ -130,10 +130,28 @@ class Hasura {
 		});
 		if (err) return [err];
 
-		//return flatten object
-		if (Object.keys(params).length == 1 && flatOne) return [null, response[Object.keys(params)[0]]];
+		let toReturn = {};
+		flatSettings.forEach((flat) => {
+			//with the request we pass flatSettings: { 'request_path': 'hasura_path' }
+			flat = Object.entries(flat)[0];
 
-		return [null, response];
+			//getting Hasura's response by hasura_path
+			let value = flat[1].split('.').reduce((o, i) => o[i], response);
+
+			//creating new object by request_path and placing the result
+			__.objectFromPath(toReturn, flat[0], value);
+		});
+
+		Object.keys(toReturn).forEach((tableName) => {
+			if (Object.keys(toReturn[tableName]).length == 1 && typeof toReturn[tableName].select != 'undefined' && flatOne) toReturn[tableName] = toReturn[tableName].select;
+		});
+
+		//return flatten object
+		if (Object.keys(params).length == 1 && flatOne) {
+			toReturn = toReturn[Object.keys(params)[0]];
+		}
+
+		return [null, toReturn];
 	}
 
 	buildQuery(params, queryType = 'query') {
@@ -142,22 +160,32 @@ class Hasura {
 		let queryName = [],
 			queryVariables = [],
 			queryFields = [],
-			queryFragments = {};
+			queryFragments = {},
+			queryFlatSetting = [];
 		let variables = {};
 
 		let builds = [];
 		tables.forEach((tableName) => {
-			let built = this.table(tableName).buildQuery({
+			let builts = this.table(tableName).buildQuery({
 				...params[tableName],
 				tableName,
 				queryType,
 			});
 
-			queryName.push(built.query.name);
+			builts.forEach((built) => {
+				queryName.push(built.query.name);
+				queryVariables.push(...built.query.variables);
+				queryFields.push(built.query.fields);
+				if (built.query.fragment) queryFragments[built.query.fragment.fragmentName] = built.query.fragment.fragment;
+				queryFlatSetting.push(built.query.flatSetting);
+				variables = Object.assign({}, variables, built.variables);
+			});
+
+			/* queryName.push(built.query.name);
 			queryVariables.push(...built.query.variables);
 			queryFields.push(built.query.fields);
 			queryFragments[built.query.fragment.fragmentName] = built.query.fragment.fragment;
-			variables = Object.assign({}, variables, built.variables);
+			variables = Object.assign({}, variables, built.variables); */
 		});
 
 		let query = `
@@ -165,9 +193,9 @@ class Hasura {
             ${queryType} ${queryName.join('_')} ${queryVariables.length ? '(' + queryVariables.join(', ') + ')' : ''} {
                 ${queryFields.join('\n')}
             }
-        `;
+		`;
 
-		return [query, variables];
+		return [query, variables, queryFlatSetting];
 	}
 
 	/* 

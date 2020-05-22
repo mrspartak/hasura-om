@@ -70,7 +70,7 @@ test.serial('test option flatOne', async (t) => {
 	);
 	if (err) throw err;
 
-	t.true(Array.isArray(response._om_test));
+	t.true(Array.isArray(response._om_test.select));
 });
 
 test.serial('add records with transaction', async (t) => {

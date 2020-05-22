@@ -3,11 +3,13 @@ name: Test coverage
 on:
   push:
     branches:    
-      - master
+      - '**'
     tags-ignore:
       - '**'
   pull_request:
     types: [assigned, opened, edited, synchronize, reopened, review_requested]
+    branches:    
+      - '**'
     tags-ignore:
       - '**'
 

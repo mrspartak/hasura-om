@@ -75,6 +75,24 @@ class Table {
             fields
     */
 	buildQuery(params) {
+		if (typeof params.select == 'undefined' && typeof params.aggregate == 'undefined')
+			params = {
+				select: params,
+			};
+		let queries = Object.keys(params);
+
+		let toReturn = [];
+		queries.forEach((queryName) => {
+			let builtFuncName = `build_${queryName}`;
+			if (typeof this[builtFuncName] != 'function') return;
+
+			toReturn.push(this[builtFuncName](params[queryName]));
+		});
+
+		return toReturn;
+	}
+
+	build_select(params) {
 		var { fields, fragment, fragmentName } = this.getFieldsFromParams(params);
 
 		let variables = {},
@@ -123,10 +141,16 @@ class Table {
 
 		//building for query or subscription
 		let queryLiteral = params.queryType == 'query' ? 'Q' : 'S';
+
+		let flatKey = `${this.params.name}.select`;
+		let flatSetting = {};
+		flatSetting[flatKey] = `${this.params.name}`;
+
 		return {
 			query: {
 				name: `${queryLiteral}_${this.params.name}`,
 				variables: query_variables,
+				flatSetting,
 				fields: `
                     ${this.params.name} ${query_field_variables.length ? '(' + query_field_variables.join(', ') + ')' : ''} {
                         ${fields}
@@ -141,6 +165,76 @@ class Table {
 		};
 	}
 
+	build_aggregate(params) {
+		let { fields } = this.getFieldsFromAggregate(params);
+
+		let variables = {},
+			query_variables = [],
+			query_field_variables = [];
+
+		let predifinedVariables = {
+			where: {
+				type(name) {
+					return `${name}_bool_exp`;
+				},
+			},
+			limit: {
+				type(name) {
+					return `Int`;
+				},
+			},
+			offset: {
+				type(name) {
+					return `Int`;
+				},
+			},
+			order_by: {
+				type(name) {
+					return `[${name}_order_by!]`;
+				},
+			},
+			distinct_on: {
+				type(name) {
+					return `[${name}_select_column!]`;
+				},
+			},
+		};
+
+		Object.keys(predifinedVariables).forEach((varName) => {
+			let varOpts = predifinedVariables[varName];
+
+			let varKey = `a_${this.params.name}_${varName}`;
+
+			if (params[varName]) {
+				variables[varKey] = params[varName];
+				query_field_variables.push(`${varName}: $${varKey}`);
+				query_variables.push(`$${varKey}: ${varOpts.type(this.params.name)}`);
+			}
+		});
+
+		//building for query or subscription
+		let queryLiteral = params.queryType == 'query' ? 'Q' : 'S';
+
+		let flatKey = `${this.params.name}.aggregate`;
+		let flatSetting = {};
+		flatSetting[flatKey] = `${this.params.name}_aggregate.aggregate`;
+
+		return {
+			query: {
+				name: `${queryLiteral}_${this.params.name}`,
+				variables: query_variables,
+				flatSetting,
+				fields: `
+                    ${this.params.name}_aggregate ${query_field_variables.length ? '(' + query_field_variables.join(', ') + ')' : ''} {
+                        ${fields}
+                    }
+                `,
+			},
+			variables,
+		};
+	}
+
+	//Mutation
 	buildMutation(params) {
 		let mutations = Object.keys(params);
 
@@ -346,6 +440,41 @@ class Table {
 		if (!fields) throw new Error('no returning fields specified');
 
 		return { fragment, fragmentName, fields };
+	}
+
+	getFieldsFromAggregate(params) {
+		let fields = params.fields ? fieldsToGql(params.fields) : false;
+		if (!fields) {
+			let aggParams = [];
+			if (typeof params.count != 'undefined') {
+				let countConditions = [];
+				if (typeof params.count.columns != 'undefined') countConditions.push(`columns: ${params.count.columns}`);
+				if (typeof params.count.distinct == 'boolean') countConditions.push(`distinct: ${params.count.distinct}`);
+
+				aggParams.push(`count${countConditions.length ? '(' + countConditions.join(',') + ')' : ''}`);
+			}
+			let fieldAggParams = ['avg', 'max', 'min', 'stddev', 'stddev_pop', 'stddev_samp', 'sum', 'var_pop', 'var_samp', 'variance'];
+			fieldAggParams.forEach((aggParam) => {
+				if (typeof params[aggParam] != 'undefined') {
+					let buildQuery = {};
+					buildQuery[aggParam] = {
+						children: params[aggParam],
+					};
+					aggParams.push(fieldsToGql(buildQuery));
+				}
+			});
+
+			fields = aggParams.join('\n');
+		}
+		if (!fields) throw new Error('no returning fields specified');
+
+		return {
+			fields: `
+				aggregate {
+					${fields}
+				}
+			`,
+		};
 	}
 }
 

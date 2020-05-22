@@ -35,15 +35,21 @@ let [err, result] = om.query({
         }
     },
     pets: {
-        where: {
-            type: {
-                _eq: 'dog'
-            }
+        select: {
+            where: {
+                type: {
+                    _eq: 'dog'
+                }
+            },
+            fields: `
+                id
+                name
+            `
         },
-        fields: `
-            id
-            name
-        `
+        aggregate: {
+            count: {},
+            avg: ['age']
+        }
     }
 })
 
@@ -54,12 +60,20 @@ result = {
             ...all_user_base_fields
         },
     ],
-    pets: [
-        {
-            id,
-            name
+    pets: {
+        select: [
+            {
+                id,
+                name
+            }
+        ],
+        aggregate: {
+            count: 23,
+            avg: {
+                age: 3.5
+            }
         }
-    ]
+    }
 } 
 */
 
