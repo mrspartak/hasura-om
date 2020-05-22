@@ -1,7 +1,19 @@
 {
   "name": "hasura-om",
   "version": "0.0.6",
-  "description": "Hasura object mapping",
+  "description": "Hasura Fragment focused ORM library",
+  "author": "Spartak <iam@spartak.io> (https://spartak.io/)",
+  "keywords": [
+    "hasura",
+    "graphql",
+    "orm",
+    "nodejs"
+  ],
+  "homepage": "https://github.com/mrspartak/hasura-om",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mrspartak/hasura-om.git"
+  },
   "main": "src/index.js",
   "scripts": {
     "test": "nyc  --reporter=html --reporter=lcovonly ava --verbose",
@@ -9,7 +21,6 @@
     "release": "npm-github-release",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
-  "author": "Spartak <iam@spartak.io> (https://spartak.io/)",
   "license": "MIT",
   "ava": {
     "files": [
