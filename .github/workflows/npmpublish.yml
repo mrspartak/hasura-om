@@ -1,4 +1,4 @@
-name: Node.js Package
+name: NPM package publish
 
 on:
   release:
@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Node 12 sample
+    name: Test on node 12
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
