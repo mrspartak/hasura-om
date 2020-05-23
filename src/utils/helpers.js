@@ -1,35 +1,44 @@
-/* promise */
+/* Promise */
 exports.to = function (promise) {
-	return promise
-		.then((data) => {
-			return [null, data];
-		})
-		.catch((err) => [err]);
+    return promise
+        .then((data) => {
+            return [null, data];
+        })
+        .catch((error) => [error]);
 };
 
 exports.asyncForEach = async function (array, callback) {
-	for (let index = 0; index < array.length; index++) {
-		await callback(array[index], index, array);
-	}
+    for (let index = 0; index < array.length; index++) {
+        await callback(array[index], index, array);
+    }
 };
 
-exports.objectFromPath = function (obj, path, value = null) {
-	if (typeof path === 'string') path = path.split('.');
-	if (!Array.isArray(path)) throw new Error('path should be type of string or array');
+exports.objectFromPath = function (object, path, value = null) {
+    if (typeof path === 'string') {
+        path = path.split('.');
+    }
 
-	if (Object.prototype.toString.call(obj) != '[object Object]') throw new Error('obj should be an object');
+    if (!Array.isArray(path)) {
+        throw new TypeError('path should be type of string or array');
+    }
 
-	let current = obj;
-	while (path.length > 1) {
-		const [head, ...tail] = path;
-		path = tail;
-		if (current[head] === undefined) {
-			current[head] = {};
-		}
-		current = current[head];
-	}
-	current[path[0]] = value;
-	return obj;
+    if (Object.prototype.toString.call(object) !== '[object Object]') {
+        throw new Error('obj should be an object');
+    }
+
+    let current = object;
+    while (path.length > 1) {
+        const [head, ...tail] = path;
+        path = tail;
+        if (current[head] === undefined) {
+            current[head] = {};
+        }
+
+        current = current[head];
+    }
+
+    current[path[0]] = value;
+    return object;
 };
 
 /**
@@ -38,21 +47,27 @@ exports.objectFromPath = function (obj, path, value = null) {
  * @param ...sources
  */
 exports.mergeDeep = function (target, ...sources) {
-	if (!sources.length) return target;
-	const source = sources.shift();
+    if (sources.length === 0) {
+        return target;
+    }
 
-	if (exports.isObject(target) && exports.isObject(source)) {
-		for (const key in source) {
-			if (exports.isObject(source[key])) {
-				if (!target[key]) Object.assign(target, { [key]: {} });
-				exports.mergeDeep(target[key], source[key]);
-			} else {
-				Object.assign(target, { [key]: source[key] });
-			}
-		}
-	}
+    const source = sources.shift();
 
-	return exports.mergeDeep(target, ...sources);
+    if (exports.isObject(target) && exports.isObject(source)) {
+        for (const key in source) {
+            if (exports.isObject(source[key])) {
+                if (!target[key]) {
+                    Object.assign(target, { [key]: {} });
+                }
+
+                exports.mergeDeep(target[key], source[key]);
+            } else {
+                Object.assign(target, { [key]: source[key] });
+            }
+        }
+    }
+
+    return exports.mergeDeep(target, ...sources);
 };
 
 /**
@@ -61,5 +76,5 @@ exports.mergeDeep = function (target, ...sources) {
  * @returns {boolean}
  */
 exports.isObject = function (item) {
-	return item && typeof item === 'object' && !Array.isArray(item);
+    return item && typeof item === 'object' && !Array.isArray(item);
 };

@@ -16,12 +16,33 @@
   },
   "main": "src/index.js",
   "scripts": {
-    "test": "nyc  --reporter=html --reporter=lcovonly ava --verbose",
-    "test_dev": "nyc --reporter=html --reporter=text ava --watch --verbose",
+    "test": "xo && nyc --reporter=html --reporter=lcovonly ava --verbose",
+    "test_dev": "xo --fix && nyc --reporter=html --reporter=text ava --watch --verbose",
     "release": "npm-github-release",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "license": "MIT",
+  "xo": {
+    "space": 4,
+    "overrides": [
+      {
+        "files": "tests/*.js",
+        "rules": {
+          "no-unused-vars": 0
+        }
+      }
+    ],
+    "prettier": true,
+    "rules": {
+      "no-var": 0,
+      "no-await-in-loop": 0,
+      "no-redeclare": 0,
+      "no-return-assign": 0,
+      "camelcase": 0,
+      "block-scoped-var": 0,
+      "no-sequences": 0
+    }
+	},
   "ava": {
     "files": [
       "tests/**/*"
@@ -53,6 +74,7 @@
     "nodemon": "^2.0.4",
     "nyc": "^15.0.1",
     "prettier": "^2.0.5",
-    "pretty-quick": "^2.0.1"
+    "pretty-quick": "^2.0.1",
+    "xo": "^0.30.0"
   }
 }

@@ -2,44 +2,56 @@ const axios = require('axios');
 const __ = require('../utils/helpers');
 
 class Gql {
-	constructor(params) {
-		const defaultParams = {
-			graphqlUrl: null,
-			adminSecret: null,
-		};
-		this.params = Object.assign({}, defaultParams, params);
+    constructor(parameters) {
+        const defaultParameters = {
+            graphqlUrl: null,
+            adminSecret: null,
+        };
+        this.params = Object.assign({}, defaultParameters, parameters);
 
-		if (!this.params.graphqlUrl) throw new Error('graphqlUrl is required');
-		if (typeof this.params.graphqlUrl != 'string') throw new Error('graphqlUrl must be Url format');
+        if (!this.params.graphqlUrl) {
+            throw new Error('graphqlUrl is required');
+        }
 
-		if (!this.params.adminSecret) throw new Error('adminSecret is required');
+        if (typeof this.params.graphqlUrl !== 'string') {
+            throw new TypeError('graphqlUrl must be Url format');
+        }
 
-		this.$http = axios.create({
-			baseURL: this.params.graphqlUrl,
-			headers: {
-				'Content-Type': 'application/json',
-				'X-Hasura-Role': 'admin',
-				'x-hasura-admin-secret': this.params.adminSecret,
-			},
-			json: true,
-		});
-	}
+        if (!this.params.adminSecret) {
+            throw new Error('adminSecret is required');
+        }
 
-	async run({ query, variables }) {
-		var [err, { data } = {}] = await __.to(
-			this.$http.request({
-				method: 'POST',
-				data: {
-					query,
-					variables,
-				},
-			}),
-		);
-		if (err) return [err];
-		if (data.errors) return [new Error(data.errors[0].message)];
+        this.$http = axios.create({
+            baseURL: this.params.graphqlUrl,
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Hasura-Role': 'admin',
+                'x-hasura-admin-secret': this.params.adminSecret,
+            },
+            json: true,
+        });
+    }
 
-		return [null, data.data];
-	}
+    async run({ query, variables }) {
+        const [err, { data } = {}] = await __.to(
+            this.$http.request({
+                method: 'POST',
+                data: {
+                    query,
+                    variables,
+                },
+            }),
+        );
+        if (err) {
+            return [err];
+        }
+
+        if (data.errors) {
+            return [new Error(data.errors[0].message)];
+        }
+
+        return [null, data.data];
+    }
 }
 
 module.exports = Gql;

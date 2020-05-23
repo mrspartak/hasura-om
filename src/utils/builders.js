@@ -1,5 +1,5 @@
-/* 
-fields can be
+/*
+Fields can be
 
     string: `
         id
@@ -35,46 +35,64 @@ fields can be
     }
 */
 exports.fieldsToGql = function (input) {
-	let baseArray = [];
-	if (typeof input == 'string') return input;
-	else if (Array.isArray(input)) {
-		input.forEach((el) => {
-			if (typeof el == 'string') baseArray.push(el);
-			else if (Array.isArray(el)) {
-				if (typeof el[0] != 'string' || !Array.isArray(el[1])) throw new Error('array should contain exactly 2 values, key and children array');
+    const baseArray = [];
+    if (typeof input === 'string') {
+        return input;
+    }
 
-				let subFragment = exports.fieldsToGql(el[1]);
-				baseArray.push(`
-                    ${el[0]} {
+    if (Array.isArray(input)) {
+        input.forEach((element) => {
+            if (typeof element === 'string') {
+                baseArray.push(element);
+            } else if (Array.isArray(element)) {
+                if (typeof element[0] !== 'string' || !Array.isArray(element[1])) {
+                    throw new TypeError('array should contain exactly 2 values, key and children array');
+                }
+
+                const subFragment = exports.fieldsToGql(element[1]);
+                baseArray.push(`
+                    ${element[0]} {
                         ${subFragment}
                     }
                 `);
-			} else if (typeof el == 'object') {
-				if (typeof el.key == 'undefined' || typeof el.values == 'undefined') throw new Error('in array object must have keys: `key` & `values`');
+            } else if (typeof element === 'object') {
+                if (typeof element.key === 'undefined' || typeof element.values === 'undefined') {
+                    throw new TypeError('in array object must have keys: `key` & `values`');
+                }
 
-				let subFragment = exports.fieldsToGql(el.values);
-				baseArray.push(`
-                    ${el.key} {
+                const subFragment = exports.fieldsToGql(element.values);
+                baseArray.push(`
+                    ${element.key} {
                         ${subFragment}
                     }
                 `);
-			} else throw new Error(`unsupported type ${typeof el}`);
-		});
-		return baseArray.join('\n');
-	} else if (typeof input == 'object') {
-		Object.keys(input).forEach((key) => {
-			let value = input[key];
-			if (value.children) {
-				let subFragment = exports.fieldsToGql(value.children);
-				if (!subFragment) throw new Error(`cant create fields from object ${key}`);
+            } else {
+                throw new TypeError(`unsupported type ${typeof element}`);
+            }
+        });
+        return baseArray.join('\n');
+    }
 
-				baseArray.push(`
+    if (typeof input === 'object') {
+        Object.keys(input).forEach((key) => {
+            const value = input[key];
+            if (value.children) {
+                const subFragment = exports.fieldsToGql(value.children);
+                if (!subFragment) {
+                    throw new Error(`cant create fields from object ${key}`);
+                }
+
+                baseArray.push(`
                     ${key} {
                         ${subFragment}
                     }
                 `);
-			} else baseArray.push(key);
-		});
-		return baseArray.join('\n');
-	} else throw new Error(`unsupported type ${typeof input}`);
+            } else {
+                baseArray.push(key);
+            }
+        });
+        return baseArray.join('\n');
+    }
+
+    throw new Error(`unsupported type ${typeof input}`);
 };

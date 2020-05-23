@@ -1,38 +1,43 @@
 const { fieldsToGql } = require('../utils/builders');
 
 class Fragment {
-	constructor(params) {
-		const defaultParams = {
-			name: 'base',
-			table: null,
-			fields: {},
-		};
+    constructor(parameters) {
+        const defaultParameters = {
+            name: 'base',
+            table: null,
+            fields: {},
+        };
 
-		this.params = Object.assign({}, defaultParams, params);
+        this.params = Object.assign({}, defaultParameters, parameters);
 
-		if (!this.params.table) throw new Error('table is required');
-		if (Object.keys(this.params.fields).length == 0) throw new Error('fields are required');
+        if (!this.params.table) {
+            throw new Error('table is required');
+        }
 
-		this._gqlFields = fieldsToGql(this.params.fields);
-	}
+        if (Object.keys(this.params.fields).length === 0) {
+            throw new Error('fields are required');
+        }
 
-	gqlFields() {
-		return this._gqlFields;
-	}
+        this._gqlFields = fieldsToGql(this.params.fields);
+    }
 
-	build() {
-		let fragmentName = `${this.params.name}_fragment_${this.params.table}`;
-		let fields = this.gqlFields();
+    gqlFields() {
+        return this._gqlFields;
+    }
 
-		return {
-			name: fragmentName,
-			raw: `
+    build() {
+        const fragmentName = `${this.params.name}_fragment_${this.params.table}`;
+        const fields = this.gqlFields();
+
+        return {
+            name: fragmentName,
+            raw: `
                 fragment ${fragmentName} on ${this.params.table} {
                     ${fields}
                 }
             `,
-		};
-	}
+        };
+    }
 }
 
 module.exports = Fragment;

@@ -1,39 +1,47 @@
 class Field {
-	constructor(params) {
-		const defaultParams = {
-			name: null,
-			type: null,
-			isPrimary: false,
-		};
+    constructor(parameters) {
+        const defaultParameters = {
+            name: null,
+            type: null,
+            isPrimary: false,
+        };
 
-		if (typeof params == 'undefined') throw new Error('input is required');
+        if (typeof parameters === 'undefined') {
+            throw new TypeError('input is required');
+        }
 
-		if (typeof params == 'string')
-			params = {
-				name: params,
-			};
+        if (typeof parameters === 'string') {
+            parameters = {
+                name: parameters,
+            };
+        }
 
-		this.params = Object.assign({}, defaultParams, params);
+        this.params = Object.assign({}, defaultParameters, parameters);
 
-		if (!this.params.name) throw new Error('name is required');
-	}
+        if (!this.params.name) {
+            throw new Error('name is required');
+        }
+    }
 
-	get name() {
-		return this.params.name;
-	}
-	get type() {
-		return this.params.type;
-	}
-	get isPrimary() {
-		return this.params.isPrimary;
-	}
+    get name() {
+        return this.params.name;
+    }
 
-	set type(value) {
-		this.params.type = value;
-	}
-	set isPrimary(value) {
-		this.params.isPrimary = !!value;
-	}
+    get type() {
+        return this.params.type;
+    }
+
+    set type(value) {
+        this.params.type = value;
+    }
+
+    get isPrimary() {
+        return this.params.isPrimary;
+    }
+
+    set isPrimary(value) {
+        this.params.isPrimary = Boolean(value);
+    }
 }
 
 module.exports = Field;
