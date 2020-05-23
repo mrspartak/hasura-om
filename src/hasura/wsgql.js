@@ -1,44 +1,44 @@
 const ws = require('ws');
-const { SubscriptionClient } = require('subscriptions-transport-ws');
+const {SubscriptionClient} = require('subscriptions-transport-ws');
 
 class WsGql {
-    constructor(parameters) {
-        const defaultParameters = {
-            wsUrl: null,
-            adminSecret: null,
-            reconnect: true,
-            lazy: true,
-        };
-        this.params = Object.assign({}, defaultParameters, parameters);
+	constructor(parameters) {
+		const defaultParameters = {
+			wsUrl: null,
+			adminSecret: null,
+			reconnect: true,
+			lazy: true,
+		};
+		this.params = Object.assign({}, defaultParameters, parameters);
 
-        if (!this.params.wsUrl) {
-            throw new Error('wsUrl is required');
-        }
+		if (!this.params.wsUrl) {
+			throw new Error('wsUrl is required');
+		}
 
-        if (typeof this.params.wsUrl !== 'string') {
-            throw new TypeError('wsUrl must be Url format');
-        }
+		if (typeof this.params.wsUrl !== 'string') {
+			throw new TypeError('wsUrl must be Url format');
+		}
 
-        if (!this.params.adminSecret) {
-            throw new Error('adminSecret is required');
-        }
+		if (!this.params.adminSecret) {
+			throw new Error('adminSecret is required');
+		}
 
-        this.client = new SubscriptionClient(
-            this.params.wsUrl,
-            {
-                reconnect: this.params.reconnect,
-                lazy: this.params.lazy,
-                connectionParams: {
-                    headers: {
-                        'X-Hasura-Role': 'admin',
-                        'x-hasura-admin-secret': this.params.adminSecret,
-                    },
-                },
-            },
-            ws,
-        );
+		this.client = new SubscriptionClient(
+			this.params.wsUrl,
+			{
+				reconnect: this.params.reconnect,
+				lazy: this.params.lazy,
+				connectionParams: {
+					headers: {
+						'X-Hasura-Role': 'admin',
+						'x-hasura-admin-secret': this.params.adminSecret,
+					},
+				},
+			},
+			ws,
+		);
 
-        /* This.client.on('connected', (data) => {
+		/* This.client.on('connected', (data) => {
             console.log('client connected', data)
         })
         this.client.on('reconnected', (data) => {
@@ -56,36 +56,36 @@ class WsGql {
         this.client.on('error', (data) => {
             console.log('client error', data.message)
         }) */
-    }
+	}
 
-    run({ query, variables, callback, flat = (data) => data }) {
-        if (typeof query !== 'string') {
-            throw new TypeError('query must be a string');
-        }
+	run({query, variables, callback, flat = (data) => data}) {
+		if (typeof query !== 'string') {
+			throw new TypeError('query must be a string');
+		}
 
-        if (typeof callback !== 'function') {
-            throw new TypeError('callback must be a function');
-        }
+		if (typeof callback !== 'function') {
+			throw new TypeError('callback must be a function');
+		}
 
-        const { subscribe } = this.client.request({
-            query,
-            variables,
-        });
+		const {subscribe} = this.client.request({
+			query,
+			variables,
+		});
 
-        const { unsubscribe } = subscribe({
-            next(data) {
-                callback([null, flat(data.data)]);
-            },
-            error(err) {
-                callback([err]);
-            },
-            complete() {
-                // Console.log('SUB COMPLETED')
-            },
-        });
+		const {unsubscribe} = subscribe({
+			next(data) {
+				callback([null, flat(data.data)]);
+			},
+			error(err) {
+				callback([err]);
+			},
+			complete() {
+				// Console.log('SUB COMPLETED')
+			},
+		});
 
-        return unsubscribe;
-    }
+		return unsubscribe;
+	}
 }
 
 module.exports = WsGql;

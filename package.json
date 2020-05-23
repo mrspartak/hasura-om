@@ -23,7 +23,7 @@
   },
   "license": "MIT",
   "xo": {
-    "space": 4,
+    "space": false,
     "overrides": [
       {
         "files": "tests/*.js",
@@ -55,7 +55,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pretty-quick --staged --pattern \"**/*.*(js|jsx)\""
+      "pre-commit": "xo --fix"
     }
   },
   "dependencies": {
@@ -73,8 +73,6 @@
     "husky": "^4.2.5",
     "nodemon": "^2.0.4",
     "nyc": "^15.0.1",
-    "prettier": "^2.0.5",
-    "pretty-quick": "^2.0.1",
     "xo": "^0.30.0"
   }
 }
