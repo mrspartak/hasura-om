@@ -14,14 +14,10 @@ test('await to test', async (t) => {
 });
 
 test('await for each', async (t) => {
-	function sleep(ms) {
-		return new Promise((resolve) => setTimeout(resolve, ms));
-	}
-
 	const ts = new Date().getTime();
 
 	await __.asyncForEach([1, 2, 3], async () => {
-		await sleep(100);
+		await __.sleep(100);
 	});
 
 	const diff = new Date().getTime() - ts;

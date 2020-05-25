@@ -1,6 +1,7 @@
 require('dotenv').config();
 const test = require('ava');
 const {Hasura} = require('../src');
+const __ = require('../src/utils/helpers');
 
 test.before(async (t) => {
 	const orm = new Hasura({
@@ -12,17 +13,10 @@ test.before(async (t) => {
 	t.context.orm = orm;
 });
 
-test.serial('test tables existing', (t) => {
-	const orm = t.context.orm;
+test.after(async (t) => {
+	await __.sleep(1000);
 
-	t.is(typeof orm.tables._om_test, 'object');
-	t.is(typeof orm.tables._om_test_types, 'object');
-});
-
-test.serial('delete all records', async (t) => {
-	const orm = t.context.orm;
-
-	const [err, response] = await orm.mutate({
+	const [err, response] = await t.context.orm.mutate({
 		_om_test: {
 			delete: {
 				where: {},
@@ -35,9 +29,15 @@ test.serial('delete all records', async (t) => {
 		},
 	});
 	t.is(err, null);
-
 	t.is(typeof response._om_test, 'object');
 	t.is(typeof response._om_test_types, 'object');
+});
+
+test.serial('test tables existing', (t) => {
+	const orm = t.context.orm;
+
+	t.is(typeof orm.tables._om_test, 'object');
+	t.is(typeof orm.tables._om_test_types, 'object');
 });
 
 test.serial('test option flatOne', async (t) => {

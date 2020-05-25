@@ -13,6 +13,10 @@ exports.asyncForEach = async function (array, callback) {
 	}
 };
 
+exports.sleep = function (ms) {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
 exports.objectFromPath = function (object, path, value = null) {
 	if (typeof path === 'string') {
 		path = path.split('.');
