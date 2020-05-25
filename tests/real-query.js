@@ -34,22 +34,10 @@ test.serial('delete all records', async (t) => {
 			},
 		},
 	});
-	if (err) {
-		throw err;
-	}
+	t.is(err, null);
 
 	t.is(typeof response._om_test, 'object');
 	t.is(typeof response._om_test_types, 'object');
-
-	// Ensure that no rows exist
-	/* var [err, response] = await orm.query({
-		_om_test: {},
-		_om_test_types: {},
-	});
-	if (err) throw err;
-
-	t.is(response._om_test.length, 0);
-	t.is(response._om_test_types.length, 0); */
 });
 
 test.serial('test option flatOne', async (t) => {
@@ -58,9 +46,7 @@ test.serial('test option flatOne', async (t) => {
 	var [err, response] = await orm.query({
 		_om_test: {},
 	});
-	if (err) {
-		throw err;
-	}
+	t.is(err, null);
 
 	t.true(Array.isArray(response));
 
@@ -72,9 +58,7 @@ test.serial('test option flatOne', async (t) => {
 			flatOne: false,
 		},
 	);
-	if (err) {
-		throw err;
-	}
+	t.is(err, null);
 
 	t.true(Array.isArray(response._om_test.select));
 });
@@ -110,9 +94,7 @@ test.serial('add records with transaction', async (t) => {
 			},
 		},
 	});
-	if (err) {
-		throw err;
-	}
+	t.is(err, null);
 
 	t.is(response._om_test[0].text, 'test');
 	t.is(response._om_test[0].type, 'some_type');
@@ -144,9 +126,7 @@ test.serial('return nested data with custom scheme', async (t) => {
 			},
 		},
 	});
-	if (err) {
-		throw err;
-	}
+	t.is(err, null);
 
 	/*
 		Note!
@@ -180,9 +160,7 @@ test.serial('insert and update', async (t) => {
 			},
 		},
 	});
-	if (err) {
-		throw err;
-	}
+	t.is(err, null);
 
 	t.is(err, null);
 	t.is(typeof response, 'object');
@@ -229,9 +207,7 @@ test.serial('failing transaction', async (t) => {
 			},
 		},
 	});
-	if (err) {
-		throw err;
-	}
+	t.is(err, null);
 
 	/*
 		Note!
@@ -270,9 +246,7 @@ test.serial('simple add row', async (t) => {
 			},
 		},
 	});
-	if (err) {
-		throw err;
-	}
+	t.is(err, null);
 
 	t.is(typeof response, 'object');
 	t.true(typeof response[0].id === 'number');

@@ -100,9 +100,7 @@ test.serial('test sub', async (t) => {
 			},
 		},
 	});
-	if (err) {
-		throw err;
-	}
+	t.is(err, null);
 
 	const id = response[0].id;
 

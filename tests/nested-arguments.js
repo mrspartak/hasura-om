@@ -44,7 +44,7 @@ test('nested draft', async (t) => {
 			},
 		},
 	});
-	if (err) throw err;
+	t.is(err, null);
 
 	const baseTestFragment = orm.table('_om_test').fragment('base');
 
@@ -67,7 +67,7 @@ test('nested draft', async (t) => {
 			where: {type: {_eq: 't2chNestedArgs'}},
 		},
 	});
-	if (err) throw err;
+	t.is(err, null);
 	t.is(response[0].objects.length, 2);
 
 	var [err, response] = await orm.query({
@@ -79,7 +79,7 @@ test('nested draft', async (t) => {
 			},
 		},
 	});
-	if (err) throw err;
+	t.is(err, null);
 	t.is(response[0].objects.length, 1);
 
 	var [err, response] = await orm.query({
@@ -91,7 +91,7 @@ test('nested draft', async (t) => {
 			},
 		},
 	});
-	if (err) throw err;
+	t.is(err, null);
 	t.is(response[0].objects.length, 1);
 	t.is(response[0].objects[0].text, 'test');
 });

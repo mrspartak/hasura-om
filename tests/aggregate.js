@@ -22,10 +22,8 @@ test.serial('simple aggregate test', async (t) => {
 			},
 		},
 	});
-	if (err) {
-		throw err;
-	}
 
+	t.is(err, null);
 	t.true(typeof response.count === 'number');
 
 	// If only one table requested it will be flated by default
@@ -41,10 +39,8 @@ test.serial('simple aggregate test', async (t) => {
 			flatOne: false,
 		},
 	);
-	if (err) {
-		throw err;
-	}
 
+	t.is(err, null);
 	t.true(typeof response._om_test.aggregate.count === 'number');
 });
 
@@ -59,9 +55,6 @@ test.serial('aggregate with query', async (t) => {
 			},
 		},
 	});
-	if (err) {
-		throw err;
-	}
 
 	/*
 		Response: {
@@ -73,6 +66,7 @@ test.serial('aggregate with query', async (t) => {
 			}]
 		}
 	*/
+	t.is(err, null);
 	t.true(typeof response.aggregate.count === 'number');
 	t.true(Array.isArray(response.select));
 });
