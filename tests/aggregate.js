@@ -127,10 +127,8 @@ test.serial('aggregate query test', async (t) => {
 			},
 		},
 	});
-	if (err) {
-		throw err;
-	}
 
+	t.is(err, null);
 	t.is(response.count, 3);
 	t.is(response.sum.increment, 18);
 	t.is(response.min.increment, 3);
@@ -155,9 +153,7 @@ test.serial('aggregate query test', async (t) => {
 			},
 		},
 	});
-	if (err) {
-		throw err;
-	}
 
+	t.is(err, null);
 	t.is(response.count, 1);
 });

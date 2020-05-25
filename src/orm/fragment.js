@@ -1,7 +1,9 @@
-const {fieldsToGql} = require('../utils/builders');
+const {fieldsToGql, template} = require('../utils/builders');
 
 class Fragment {
 	constructor(parameters) {
+		this._isFragment = true;
+
 		const defaultParameters = {
 			name: 'base',
 			table: null,
@@ -14,28 +16,71 @@ class Fragment {
 			throw new Error('table is required');
 		}
 
-		if (Object.keys(this.params.fields).length === 0) {
+		if (Object.keys(this.rawFields()).length === 0 || this.rawFields() === '') {
 			throw new Error('fields are required');
 		}
 
-		this._gqlFields = fieldsToGql(this.params.fields);
+		// Builded fields part of fragment
+		const {fields, fragmentOperationArgument} = fieldsToGql(this.rawFields());
+		this._fields = fields;
+		this._arguments = fragmentOperationArgument;
+
+		// Templates to create parts local parts of fragment
+		this._fragmentTemplate = template`
+			fragment ${'fragmentName'} on ${'table'} {
+				${'fields'}
+			}
+		`;
+		this._nameTemplate = template`${'name'}_fragment_${'table'}`;
 	}
 
-	gqlFields() {
-		return this._gqlFields;
+	/* 
+		Fields passed to Fragment constructor
+	*/
+	rawFields() {
+		return this.params.fields;
+	}
+
+	/* 
+		Generated fields to string
+	*/
+	fields() {
+		return this._fields;
+	}
+
+	/* 
+	 	Generated arguments if fragment contains them
+	*/
+	arguments() {
+		return this._arguments;
+	}
+
+	/* 
+		Generated Fragment name
+	*/
+	name() {
+		return this._nameTemplate({
+			name: this.params.name,
+			table: this.params.table,
+		});
+	}
+
+	/* 
+		Generated Fragment
+	*/
+	fragment() {
+		return this._fragmentTemplate({
+			fragmentName: this.name(),
+			table: this.params.table,
+			fields: this.fields(),
+		});
 	}
 
 	build() {
-		const fragmentName = `${this.params.name}_fragment_${this.params.table}`;
-		const fields = this.gqlFields();
-
 		return {
-			name: fragmentName,
-			raw: `
-                fragment ${fragmentName} on ${this.params.table} {
-                    ${fields}
-                }
-            `,
+			name: this.name(),
+			raw: this.fragment(),
+			arguments: this.arguments(),
 		};
 	}
 }

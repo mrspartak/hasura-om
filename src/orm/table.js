@@ -1,6 +1,6 @@
 const Fragment = require('./fragment');
 const Field = require('./field');
-const {fieldsToGql} = require('../utils/builders');
+const {fieldsToGql, template} = require('../utils/builders');
 
 class Table {
 	constructor(parameters) {
@@ -17,6 +17,20 @@ class Table {
 
 		this.fields = {};
 		this.fragments = {};
+
+		this.queryNameTemplate = template`${'literal'}_${'type'}_${this.params.name}`;
+		this.queryTemplate = template`
+			${this.params.name}${'table_postfix'} ${'arguments'} {
+				${'fields'}
+			}
+		`;
+		this.mutationTeamplate = template`
+			${'table_prefix'}${this.params.name} ${'arguments'} {
+				returning {
+					${'fields'}
+				}
+			}
+		`;
 	}
 
 	init() {
@@ -116,69 +130,30 @@ class Table {
 	}
 
 	build_select(parameters) {
-		const {fields, fragment, fragmentName} = this.getFieldsFromParams(parameters);
-
-		const variables = {};
-		const query_variables = [];
-		const query_field_variables = [];
-
-		const predifinedVariables = {
-			where: {
-				type(name) {
-					return `${name}_bool_exp`;
-				},
-			},
-			limit: {
-				type() {
-					return `Int`;
-				},
-			},
-			offset: {
-				type() {
-					return `Int`;
-				},
-			},
-			order_by: {
-				type(name) {
-					return `[${name}_order_by!]`;
-				},
-			},
-			distinct_on: {
-				type(name) {
-					return `[${name}_select_column!]`;
-				},
-			},
-		};
-
-		Object.keys(predifinedVariables).forEach((varName) => {
-			const varOptions = predifinedVariables[varName];
-
-			const varKey = `${this.params.name}_${varName}`;
-
-			if (parameters[varName]) {
-				variables[varKey] = parameters[varName];
-				query_field_variables.push(`${varName}: $${varKey}`);
-				query_variables.push(`$${varKey}: ${varOptions.type(this.params.name)}`);
-			}
-		});
+		const {fields, fragment, fragmentName, fragmentOperationArguments} = this.getFieldsFromParams(parameters);
 
 		// Building for query or subscription
 		const queryLiteral = parameters.queryType === 'query' ? 'Q' : 'S';
 
-		const flatKey = `${this.params.name}.select`;
-		const flatSetting = {};
-		flatSetting[flatKey] = `${this.params.name}`;
+		var {variables, query_arguments, operation_arguments} = this.buildArguments(['where', 'limit', 'offset', 'order_by', 'distinct_on'], parameters, 's');
+
+		const flatSetting = {
+			[`${this.params.name}.select`]: `${this.params.name}`,
+		};
 
 		return {
 			query: {
-				name: `${queryLiteral}_${this.params.name}`,
-				variables: query_variables,
+				name: this.queryNameTemplate({
+					literal: queryLiteral,
+					type: 's',
+				}),
+				arguments: [...operation_arguments, ...fragmentOperationArguments],
 				flatSetting,
-				fields: `
-                    ${this.params.name} ${query_field_variables.length > 0 ? '(' + query_field_variables.join(', ') + ')' : ''} {
-                        ${fields}
-                    }
-                `,
+				fields: this.queryTemplate({
+					table_postfix: '',
+					arguments: query_arguments.length > 0 ? '(' + query_arguments.join(', ') + ')' : '',
+					fields,
+				}),
 				fragment: {
 					fragment,
 					fragmentName,
@@ -189,69 +164,30 @@ class Table {
 	}
 
 	build_aggregate(parameters) {
-		const {fields} = this.getFieldsFromAggregate(parameters);
-
-		const variables = {};
-		const query_variables = [];
-		const query_field_variables = [];
-
-		const predifinedVariables = {
-			where: {
-				type(name) {
-					return `${name}_bool_exp`;
-				},
-			},
-			limit: {
-				type() {
-					return `Int`;
-				},
-			},
-			offset: {
-				type() {
-					return `Int`;
-				},
-			},
-			order_by: {
-				type(name) {
-					return `[${name}_order_by!]`;
-				},
-			},
-			distinct_on: {
-				type(name) {
-					return `[${name}_select_column!]`;
-				},
-			},
-		};
-
-		Object.keys(predifinedVariables).forEach((varName) => {
-			const varOptions = predifinedVariables[varName];
-
-			const varKey = `a_${this.params.name}_${varName}`;
-
-			if (parameters[varName]) {
-				variables[varKey] = parameters[varName];
-				query_field_variables.push(`${varName}: $${varKey}`);
-				query_variables.push(`$${varKey}: ${varOptions.type(this.params.name)}`);
-			}
-		});
+		const {fields, fragmentOperationArguments} = this.getFieldsFromAggregate(parameters);
 
 		// Building for query or subscription
 		const queryLiteral = parameters.queryType === 'query' ? 'Q' : 'S';
 
-		const flatKey = `${this.params.name}.aggregate`;
-		const flatSetting = {};
-		flatSetting[flatKey] = `${this.params.name}_aggregate.aggregate`;
+		var {variables, query_arguments, operation_arguments} = this.buildArguments(['where', 'limit', 'offset', 'order_by', 'distinct_on'], parameters, 'a');
+
+		const flatSetting = {
+			[`${this.params.name}.aggregate`]: `${this.params.name}_aggregate.aggregate`,
+		};
 
 		return {
 			query: {
-				name: `${queryLiteral}_${this.params.name}`,
-				variables: query_variables,
+				name: this.queryNameTemplate({
+					literal: queryLiteral,
+					type: 'a',
+				}),
+				arguments: [...operation_arguments, ...fragmentOperationArguments],
 				flatSetting,
-				fields: `
-                    ${this.params.name}_aggregate ${query_field_variables.length > 0 ? '(' + query_field_variables.join(', ') + ')' : ''} {
-                        ${fields}
-                    }
-                `,
+				fields: this.queryTemplate({
+					table_postfix: '_aggregate',
+					arguments: query_arguments.length > 0 ? '(' + query_arguments.join(', ') + ')' : '',
+					fields,
+				}),
 			},
 			variables,
 		};
@@ -275,53 +211,24 @@ class Table {
 	}
 
 	build_insert(parameters) {
-		const {fields, fragment, fragmentName} = this.getFieldsFromParams(parameters);
+		const {fields, fragment, fragmentName, fragmentOperationArguments} = this.getFieldsFromParams(parameters);
 
-		const variables = {};
-		const query_variables = [];
-		const query_field_variables = [];
+		var {variables, query_arguments, operation_arguments} = this.buildArguments(['objects', 'on_conflict'], parameters, 'i');
 
-		const predifinedVariables = {
-			objects: {
-				type(name) {
-					return `[${name}_insert_input!]!`;
-				},
-			},
-			on_conflict: {
-				type(name) {
-					return `${name}_on_conflict`;
-				},
-			},
+		const flatSetting = {
+			[`${this.params.name}.insert`]: `insert_${this.params.name}.returning`,
 		};
-
-		Object.keys(predifinedVariables).forEach((varName) => {
-			const varOptions = predifinedVariables[varName];
-
-			const varKey = `i_${this.params.name}_${varName}`;
-
-			if (parameters[varName]) {
-				variables[varKey] = parameters[varName];
-				query_field_variables.push(`${varName}: $${varKey}`);
-				query_variables.push(`$${varKey}: ${varOptions.type(this.params.name)}`);
-			}
-		});
-
-		const flatKey = `${this.params.name}.insert`;
-		const flatSetting = {};
-		flatSetting[flatKey] = `insert_${this.params.name}.returning`;
 
 		return {
 			query: {
-				name: `I_${this.params.name}`,
+				name: this.queryNameTemplate({literal: 'M', type: 'i'}),
 				flatSetting,
-				variables: query_variables,
-				fields: `
-                    insert_${this.params.name}(${query_field_variables.join(', ')}) {
-                        returning {
-                            ${fields}
-                        }
-                    }
-                `,
+				arguments: [...operation_arguments, ...fragmentOperationArguments],
+				fields: this.mutationTeamplate({
+					table_prefix: 'insert_',
+					arguments: `(${query_arguments.join(', ')})`,
+					fields,
+				}),
 				fragment: {
 					fragment,
 					fragmentName,
@@ -332,58 +239,24 @@ class Table {
 	}
 
 	build_update(parameters) {
-		const {fields, fragment, fragmentName} = this.getFieldsFromParams(parameters);
+		const {fields, fragment, fragmentName, fragmentOperationArguments} = this.getFieldsFromParams(parameters);
 
-		const variables = {};
-		const query_variables = [];
-		const query_field_variables = [];
+		var {variables, query_arguments, operation_arguments} = this.buildArguments(['where', '_set', '_inc'], parameters, 'u');
 
-		const predifinedVariables = {
-			where: {
-				type(name) {
-					return `${name}_bool_exp!`;
-				},
-			},
-			_set: {
-				type(name) {
-					return `${name}_set_input`;
-				},
-			},
-			_inc: {
-				type(name) {
-					return `${name}_inc_input`;
-				},
-			},
+		const flatSetting = {
+			[`${this.params.name}.update`]: `update_${this.params.name}.returning`,
 		};
-
-		Object.keys(predifinedVariables).forEach((varName) => {
-			const varOptions = predifinedVariables[varName];
-
-			const varKey = `u_${this.params.name}_${varName}`;
-
-			if (parameters[varName]) {
-				variables[varKey] = parameters[varName];
-				query_field_variables.push(`${varName}: $${varKey}`);
-				query_variables.push(`$${varKey}: ${varOptions.type(this.params.name)}`);
-			}
-		});
-
-		const flatKey = `${this.params.name}.update`;
-		const flatSetting = {};
-		flatSetting[flatKey] = `update_${this.params.name}.returning`;
 
 		return {
 			query: {
-				name: `U_${this.params.name}`,
+				name: this.queryNameTemplate({literal: 'M', type: 'u'}),
 				flatSetting,
-				variables: query_variables,
-				fields: `
-                    update_${this.params.name}(${query_field_variables.join(', ')}) {
-                        returning {
-                            ${fields}
-                        }
-                    }
-                `,
+				arguments: [...operation_arguments, ...fragmentOperationArguments],
+				fields: this.mutationTeamplate({
+					table_prefix: 'update_',
+					arguments: `(${query_arguments.join(', ')})`,
+					fields,
+				}),
 				fragment: {
 					fragment,
 					fragmentName,
@@ -394,48 +267,24 @@ class Table {
 	}
 
 	build_delete(parameters) {
-		const {fields, fragment, fragmentName} = this.getFieldsFromParams(parameters);
+		const {fields, fragment, fragmentName, fragmentOperationArguments} = this.getFieldsFromParams(parameters);
 
-		const variables = {};
-		const query_variables = [];
-		const query_field_variables = [];
+		var {variables, query_arguments, operation_arguments} = this.buildArguments(['where'], parameters, 'd');
 
-		const predifinedVariables = {
-			where: {
-				type(name) {
-					return `${name}_bool_exp!`;
-				},
-			},
+		const flatSetting = {
+			[`${this.params.name}.delete`]: `delete_${this.params.name}.returning`,
 		};
-
-		Object.keys(predifinedVariables).forEach((varName) => {
-			const varOptions = predifinedVariables[varName];
-
-			const varKey = `d_${this.params.name}_${varName}`;
-
-			if (parameters[varName]) {
-				variables[varKey] = parameters[varName];
-				query_field_variables.push(`${varName}: $${varKey}`);
-				query_variables.push(`$${varKey}: ${varOptions.type(this.params.name)}`);
-			}
-		});
-
-		const flatKey = `${this.params.name}.delete`;
-		const flatSetting = {};
-		flatSetting[flatKey] = `delete_${this.params.name}.returning`;
 
 		return {
 			query: {
-				name: `D_${this.params.name}`,
+				name: this.queryNameTemplate({literal: 'M', type: 'd'}),
 				flatSetting,
-				variables: query_variables,
-				fields: `
-                    delete_${this.params.name}(${query_field_variables.join(', ')}) {
-                        returning {
-                            ${fields}
-                        }
-                    }
-                `,
+				arguments: [...operation_arguments, ...fragmentOperationArguments],
+				fields: this.mutationTeamplate({
+					table_prefix: 'delete_',
+					arguments: `(${query_arguments.join(', ')})`,
+					fields,
+				}),
 				fragment: {
 					fragment,
 					fragmentName,
@@ -446,9 +295,17 @@ class Table {
 	}
 
 	getFieldsFromParams(parameters) {
+		let fields = '';
 		let fragment = '';
 		let fragmentName = '';
-		let fields = parameters.fields ? fieldsToGql(parameters.fields) : false;
+		let fragmentOperationArguments = [];
+		const gqlFields = parameters.fields ? fieldsToGql(parameters.fields) : false;
+
+		if (gqlFields) {
+			fields = gqlFields.fields;
+			fragmentOperationArguments = gqlFields.fragmentOperationArgument;
+		}
+
 		if (!fields) {
 			let fInstance = null;
 			if (typeof parameters.fragment === 'string') {
@@ -467,17 +324,26 @@ class Table {
 			fragment = fragmentObject.raw;
 			fragmentName = fragmentObject.name;
 			fields = `...${fragmentObject.name}`;
+			fragmentOperationArguments = fragmentObject.arguments;
 		}
 
 		if (!fields) {
 			throw new Error('no returning fields specified');
 		}
 
-		return {fragment, fragmentName, fields};
+		return {fragment, fragmentName, fields, fragmentOperationArguments};
 	}
 
 	getFieldsFromAggregate(parameters) {
-		let fields = parameters.fields ? fieldsToGql(parameters.fields) : false;
+		let fields = '';
+		let fragmentOperationArguments = [];
+		const gqlFields = parameters.fields ? fieldsToGql(parameters.fields) : false;
+
+		if (gqlFields) {
+			fields = gqlFields.fields;
+			fragmentOperationArguments = gqlFields.fragmentOperationArgument;
+		}
+
 		if (!fields) {
 			const aggParameters = [];
 			if (typeof parameters.count !== 'undefined') {
@@ -500,7 +366,9 @@ class Table {
 					buildQuery[aggParameter] = {
 						children: parameters[aggParameter],
 					};
-					aggParameters.push(fieldsToGql(buildQuery));
+
+					const {fields} = fieldsToGql(buildQuery);
+					aggParameters.push(fields);
 				}
 			});
 
@@ -517,6 +385,49 @@ class Table {
 					${fields}
 				}
 			`,
+			fragmentOperationArguments,
+		};
+	}
+
+	/* 
+		ArgumentKeys = ['where', ...]
+		type - d
+	*/
+	buildArguments(argumentKeys, parameters, type) {
+		const argumentDict = {
+			where: `${this.params.name}_bool_exp!`,
+			limit: `Int`,
+			offset: `Int`,
+			order_by: `[${this.params.name}_order_by!]`,
+			distinct_on: `[${this.params.name}_select_column!]`,
+			objects: `[${this.params.name}_insert_input!]!`,
+			on_conflict: `${this.params.name}_on_conflict`,
+			_set: `${this.params.name}_set_input`,
+			_inc: `${this.params.name}_inc_input`,
+		};
+
+		const variables = {};
+		const query_arguments = [];
+		const operation_arguments = [];
+		argumentKeys.forEach((argumentKey) => {
+			const argumentType = argumentDict[argumentKey];
+			const variableKey = `${type}_${this.params.name}_${argumentKey}`;
+
+			// We will generate arguments only if client request contains them
+			if (parameters[argumentKey]) {
+				// Fill variables to pass to query
+				variables[variableKey] = parameters[argumentKey];
+				// Query level arguments
+				query_arguments.push(`${argumentKey}: $${variableKey}`);
+				// Operation level variables definition
+				operation_arguments.push(`$${variableKey}: ${argumentType}`);
+			}
+		});
+
+		return {
+			variables,
+			query_arguments,
+			operation_arguments,
 		};
 	}
 }

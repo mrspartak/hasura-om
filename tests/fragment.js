@@ -45,15 +45,42 @@ test('getting fragment name', (t) => {
 		table: 'test',
 		fields: ['id'],
 	});
+	t.is(fragment.name(), 'base_fragment_test');
 
-	// Right naming using table and fragment names
-	var {name} = fragment.build();
-	t.is(name, 'base_fragment_test');
+	const fragment2 = new Fragment({
+		table: 'test2',
+		name: 'new',
+		fields: ['id'],
+	});
+	t.is(fragment2.name(), 'new_fragment_test2');
+});
 
-	fragment.params.table = 'test2';
-	fragment.params.name = 'new';
-	var {name} = fragment.build();
-	t.is(name, 'new_fragment_test2');
+test('getting fragment arguments', (t) => {
+	const fragment = new Fragment({
+		table: 'test',
+		fields: ['id'],
+	});
+	t.deepEqual(fragment.arguments(), []);
+
+	const fragment2 = new Fragment({
+		table: 'test',
+		fields: [
+			'id',
+			[
+				'logo',
+				['url'],
+				{
+					_table: 'images',
+					limit: 'logo_limit',
+					offset: 'logo_offset',
+					where: 'logo_where',
+					order_by: 'logo_order_by',
+					distinct_on: 'logo_distinct_on',
+				},
+			],
+		],
+	});
+	t.deepEqual(fragment2.arguments(), ['$logo_limit: Int', '$logo_offset: Int', '$logo_where: images_bool_exp', '$logo_order_by: [images_order_by!]', '$logo_distinct_on: [images_select_column!]']);
 });
 
 test('checking fragment decalration', (t) => {
@@ -79,16 +106,14 @@ test('checking fragment decalration', (t) => {
 			},
 		],
 	});
-	var {raw} = fragment.build();
-	t.deepEqual(gql(raw), testFragment);
+	t.deepEqual(gql(fragment.fragment()), testFragment);
 
 	// Declaring fields with array 2nd way
 	var fragment = new Fragment({
 		table: 'test',
 		fields: ['id', 'name', ['logo', ['url']]],
 	});
-	var {raw} = fragment.build();
-	t.deepEqual(gql(raw), testFragment);
+	t.deepEqual(gql(fragment.fragment()), testFragment);
 
 	// Declaring fileds with string
 	var fragment = new Fragment({
@@ -101,8 +126,7 @@ test('checking fragment decalration', (t) => {
             }
         `,
 	});
-	var {raw} = fragment.build();
-	t.deepEqual(gql(raw), testFragment);
+	t.deepEqual(gql(fragment.fragment()), testFragment);
 
 	// Declaring fileds with object
 	var fragment = new Fragment({
@@ -115,8 +139,39 @@ test('checking fragment decalration', (t) => {
 			},
 		},
 	});
-	var {raw} = fragment.build();
-	t.deepEqual(gql(raw), testFragment);
+	t.deepEqual(gql(fragment.fragment()), testFragment);
+});
+
+test('nested arguments declaration', (t) => {
+	const testFragment = gql`
+		fragment base_fragment_test on test {
+			id
+			name
+			logo(where: $logo_where) {
+				url
+			}
+		}
+	`;
+
+	var fragment = new Fragment({
+		table: 'test',
+		name: 'base',
+		fields: {
+			id: {},
+			name: {},
+			logo: {
+				children: {
+					url: {},
+				},
+				arguments: {
+					_table: 'logo',
+					where: 'logo_where',
+					unexpected_argument: 'test',
+				},
+			},
+		},
+	});
+	t.deepEqual(gql(fragment.fragment()), testFragment);
 });
 
 test('checking big declaration', (t) => {
@@ -266,10 +321,10 @@ test('check extension', (t) => {
 		name: 'main',
 		table: 'test',
 		fields: [
-			baseTestFragment.gqlFields(),
+			baseTestFragment,
 			{
 				key: 'logo',
-				values: baseLogoFragment.gqlFields(),
+				values: baseLogoFragment,
 			},
 		],
 	});
@@ -280,9 +335,9 @@ test('check extension', (t) => {
 		name: 'main',
 		table: 'test',
 		fields: `
-			${baseTestFragment.gqlFields()}
+			${baseTestFragment.fields()}
 			logo {
-				${baseLogoFragment.gqlFields()}
+				${baseLogoFragment.fields()}
 			}
 		`,
 	});
@@ -290,12 +345,12 @@ test('check extension', (t) => {
 	t.deepEqual(gql(raw), testFragment);
 });
 
-test('check gqlFields function', (t) => {
+test('check fields function', (t) => {
 	const baseTestFragment = new Fragment({
 		name: 'base',
 		table: 'test',
 		fields: ['id', 'name'],
 	});
 
-	t.is(typeof baseTestFragment.gqlFields(), 'string');
+	t.is(typeof baseTestFragment.fields(), 'string');
 });

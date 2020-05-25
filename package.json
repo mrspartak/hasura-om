@@ -1,6 +1,6 @@
 {
   "name": "hasura-om",
-  "version": "0.0.6",
+  "version": "0.0.15",
   "description": "Hasura Fragment focused ORM library",
   "author": "Spartak <iam@spartak.io> (https://spartak.io/)",
   "keywords": [
@@ -40,7 +40,8 @@
       "no-return-assign": 0,
       "camelcase": 0,
       "block-scoped-var": 0,
-      "no-sequences": 0
+      "no-sequences": 0,
+      "no-negated-condition": 0
     }
   },
   "ava": {

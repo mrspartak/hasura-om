@@ -158,6 +158,8 @@ class Hasura {
 			return [error];
 		}
 
+		// Console.log(query);
+
 		settings = __.mergeDeep({}, this.params.query, settings);
 
 		const [err, response] = await this.$gql.run({
@@ -180,8 +182,8 @@ class Hasura {
 	buildQuery(parameters, queryType = 'query') {
 		const tables = Object.keys(parameters);
 
-		const queryName = [];
-		const queryVariables = [];
+		const operationName = [];
+		const operationArguments = [];
 		const queryFields = [];
 		const queryFragments = {};
 		const queryFlatSetting = [];
@@ -194,9 +196,12 @@ class Hasura {
 				queryType,
 			});
 
+			variables = Object.assign({}, parameters[tableName].variables);
+
 			builts.forEach((built) => {
-				queryName.push(built.query.name);
-				queryVariables.push(...built.query.variables);
+				operationName.push(built.query.name);
+				operationArguments.push(...built.query.arguments);
+
 				queryFields.push(built.query.fields);
 				if (built.query.fragment) {
 					queryFragments[built.query.fragment.fragmentName] = built.query.fragment.fragment;
@@ -205,17 +210,37 @@ class Hasura {
 				queryFlatSetting.push(built.query.flatSetting);
 				variables = Object.assign({}, variables, built.variables);
 			});
-
-			/* QueryName.push(built.query.name);
-			queryVariables.push(...built.query.variables);
-			queryFields.push(built.query.fields);
-			queryFragments[built.query.fragment.fragmentName] = built.query.fragment.fragment;
-			variables = Object.assign({}, variables, built.variables); */
 		});
 
+		/* 	
+			//!queryFragments[]
+			fragment pk_fragment_user on user {
+				id
+			}
+			
+			//!queryType - query | subscription
+			//!operationName - [S_s_user, S_a_user]
+			//!operationArguments - [$user_where: user_bool_exp]
+			query S_s_user_S_a_user($user_where: user_bool_exp) {
+			
+				//!queryFields - [user , user_aggregate]
+				user(where: $user_where) {
+					...pk_fragment_user
+				}
+				user_aggregate {
+					aggregate {
+						count
+						sum {
+							id
+							money
+						}
+					}
+				}
+			}
+		*/
 		const query = `
             ${Object.values(queryFragments).join('\n')}
-            ${queryType} ${queryName.join('_')} ${queryVariables.length > 0 ? '(' + queryVariables.join(', ') + ')' : ''} {
+            ${queryType} ${operationName.join('_')} ${operationArguments.length > 0 ? '(' + operationArguments.join(', ') + ')' : ''} {
                 ${queryFields.join('\n')}
             }
 		`;
@@ -278,8 +303,8 @@ class Hasura {
 	buildMutation(parameters) {
 		const tables = Object.keys(parameters);
 
-		const queryName = [];
-		const queryVariables = [];
+		const operationName = [];
+		const operationArguments = [];
 		const queryFields = [];
 		const queryFragments = {};
 		const queryFlatSetting = [];
@@ -292,8 +317,9 @@ class Hasura {
 			});
 
 			builts.forEach((built) => {
-				queryName.push(built.query.name);
-				queryVariables.push(...built.query.variables);
+				operationName.push(built.query.name);
+				operationArguments.push(...built.query.arguments);
+
 				queryFields.push(built.query.fields);
 				queryFragments[built.query.fragment.fragmentName] = built.query.fragment.fragment;
 				queryFlatSetting.push(built.query.flatSetting);
@@ -303,7 +329,7 @@ class Hasura {
 
 		const query = `
             ${Object.values(queryFragments).join('\n')}
-            mutation ${queryName.join('_')} (${queryVariables.join(', ')}) {
+            mutation ${operationName.join('_')} (${operationArguments.join(', ')}) {
                 ${queryFields.join('\n')}
             }
         `;
