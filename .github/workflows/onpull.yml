@@ -6,12 +6,16 @@ on:
       - 'gh-pages'
     tags-ignore:
       - '**'
+    paths-ignore:
+      - 'docs/**'
   pull_request:
     types: [assigned, opened, edited, synchronize, reopened, review_requested]
     branches-ignore:    
       - 'gh-pages'
     tags-ignore:
       - '**'
+    paths-ignore:
+      - 'docs/**'
 
 jobs:
   build:
