@@ -2,14 +2,14 @@ name: Lint / Test / Coverage
 
 on:
   push:
-    branches:    
-      - '**'
+    branches-ignore:    
+      - 'gh-pages'
     tags-ignore:
       - '**'
   pull_request:
     types: [assigned, opened, edited, synchronize, reopened, review_requested]
-    branches:    
-      - '**'
+    branches-ignore:    
+      - 'gh-pages'
     tags-ignore:
       - '**'
 
