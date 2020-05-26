@@ -1,6 +1,6 @@
 module.exports = {
     port: 4000,
-    base: 'hasura-om',
+    base: '/hasura-om/',
     title: 'Hasura ORM',
     description: 'Fragment oriented hasura ORM for backends with many stuff "from the box"',
     themeConfig: {
