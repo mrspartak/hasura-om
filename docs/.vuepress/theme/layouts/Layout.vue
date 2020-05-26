@@ -41,6 +41,8 @@ import Sidebar from '@theme/components/Sidebar.vue'
 import Footer from '@theme/components/Footer.vue'
 import { resolveSidebarItems } from '../util'
 
+import tracker from '@theme/plugins/ackee.js'
+
 export default {
   name: 'Layout',
 
@@ -107,7 +109,14 @@ export default {
     }
   },
 
+  watch: {
+		'$route.path': function() {
+			tracker.record()
+		}
+	},
+
   mounted () {
+    tracker.record()
     this.$router.afterEach(() => {
       this.isSidebarOpen = false
     })
