@@ -26,11 +26,12 @@ If you know a better way to solve this problem, you are welcome to issues or ema
 - [x] Fragment extending (v0.0.7)
 - [x] Subscriptions (v0.0.10)
 - [x] Aggregate queries (v0.0.12)
-- [x] Nested queries
+- [x] Nested queries (v0.0.15)
 - [ ] Hasura class extend EventEmitter
 - [ ] Refactor query builder code
 - [ ] Docs
 - [ ] Support directives
+- [ ] Tune performance
 
 ## Simple example
 ```javascript

@@ -3,3 +3,4 @@ todo
 .env
 .nyc_output
 coverage
+docs

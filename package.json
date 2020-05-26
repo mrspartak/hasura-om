@@ -19,7 +19,9 @@
     "test": "xo && nyc --reporter=html --reporter=lcovonly ava --verbose",
     "test_dev": "xo --fix && nyc --reporter=html --reporter=text ava --watch --verbose",
     "release": "npm-github-release",
-    "coverage": "nyc report --reporter=text-lcov | coveralls"
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
   },
   "license": "MIT",
   "xo": {
@@ -42,7 +44,10 @@
       "block-scoped-var": 0,
       "no-sequences": 0,
       "no-negated-condition": 0
-    }
+    },
+    "ignores": [
+      "docs/**"
+    ]
   },
   "ava": {
     "files": [

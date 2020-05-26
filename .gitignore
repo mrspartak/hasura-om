@@ -1,6 +1,15 @@
 node_modules
+
+#local config
 .env
+
+#my local stuff
 todo
 tmp
+
+#code coverage reports
 .nyc_output
 coverage
+
+# vuepress build output
+docs/.vuepress/dist
