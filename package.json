@@ -58,7 +58,7 @@
     ],
     "failWithoutAssertions": false,
     "concurrency": 8,
-    "timeout": 15
+    "timeout": "20s"
   },
   "husky": {
     "hooks": {
