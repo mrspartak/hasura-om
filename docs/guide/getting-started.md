@@ -52,6 +52,9 @@ let pkFragment = orm.table('user').fragment('pk')
 
 
 ## Basic query
+
+Read more about [making queries](/guide/query)
+
 ```javascript
 let [err, result] = await orm.query({
     user: {
@@ -89,6 +92,9 @@ let [err, result] = await orm.query({
 
 
 ## Basic mutation
+
+Read more about [making mutations](/guide/mutation)
+
 ```javascript
 let [err, result] = om.mutate({
     user: {
@@ -126,6 +132,9 @@ let [err, result] = om.mutate({
 
 
 ## Basic subscription
+
+Read more about [subscribing](/guide/subscribe)
+
 ```javascript
 let unsub = om.subscribe({
     user: {

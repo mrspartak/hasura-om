@@ -21,7 +21,10 @@ module.exports = {
                 children: [
                     ['/guide/', 'Introduction'],
                     ['/guide/getting-started', 'Getting started'],
-                    ['/guide/create-fragment', 'Creating fragment']
+                    ['/guide/create-fragment', 'Creating fragment'],
+                    ['/guide/query', 'Making queries'],
+                    ['/guide/mutation', 'Making mutations'],
+                    ['/guide/subscribe', 'Subscribing'],
                 ]
             },
             {
