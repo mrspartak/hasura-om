@@ -57,7 +57,8 @@
       "esm"
     ],
     "failWithoutAssertions": false,
-    "concurrency": 16
+    "concurrency": 8,
+    "timeout": 15
   },
   "husky": {
     "hooks": {
