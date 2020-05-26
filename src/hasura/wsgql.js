@@ -1,8 +1,11 @@
+const EventEmitter = require('events');
 const ws = require('ws');
 const {SubscriptionClient} = require('subscriptions-transport-ws');
 
-class WsGql {
+class WsGql extends EventEmitter {
 	constructor(parameters) {
+		super();
+
 		const defaultParameters = {
 			wsUrl: null,
 			adminSecret: null,
@@ -38,24 +41,24 @@ class WsGql {
 			ws,
 		);
 
-		/* This.client.on('connected', (data) => {
-            console.log('client connected', data)
-        })
-        this.client.on('reconnected', (data) => {
-            console.log('client reconnected', data)
-        })
-        this.client.on('connecting', (data) => {
-            console.log('client connecting', data)
-        })
-        this.client.on('reconnecting', (data) => {
-            console.log('client reconnecting', data)
-        })
-        this.client.on('disconnected', (data) => {
-            console.log('client disconnected', data)
-        })
-        this.client.on('error', (data) => {
-            console.log('client error', data.message)
-        }) */
+		this.client.on('connecting', () => {
+			this.emit('connecting');
+		});
+		this.client.on('connected', () => {
+			this.emit('connected');
+		});
+		this.client.on('reconnected', () => {
+			this.emit('reconnected');
+		});
+		this.client.on('reconnecting', () => {
+			this.emit('reconnecting');
+		});
+		this.client.on('disconnected', () => {
+			this.emit('disconnected');
+		});
+		this.client.on('error', (error) => {
+			this.emit('error', error);
+		});
 	}
 
 	run({query, variables, callback, flat = (data) => data}) {

@@ -9,7 +9,7 @@
     "orm",
     "nodejs"
   ],
-  "homepage": "https://github.com/mrspartak/hasura-om",
+  "homepage": "https://mrspartak.github.io/hasura-om/",
   "repository": {
     "type": "git",
     "url": "https://github.com/mrspartak/hasura-om.git"

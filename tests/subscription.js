@@ -152,3 +152,51 @@ test.serial('test sub', async (t) => {
 		);
 	});
 });
+
+test.serial('test events connect/disconnect', (t) => {
+	const orm = new Hasura({
+		graphqlUrl: process.env.GQL_ENDPOINT,
+		adminSecret: process.env.GQL_SECRET,
+	});
+	orm.createTable({
+		name: '_om_test',
+	});
+	orm.table('_om_test').setField({
+		name: 'id',
+		type: 'Int',
+	});
+	orm.table('_om_test').init();
+
+	return new Promise((resolve) => {
+		t.timeout(1000);
+
+		let passed = 0;
+		orm.$ws.on('connected', () => {
+			passed++;
+		});
+		orm.$ws.on('connecting', () => {
+			passed++;
+		});
+		orm.$ws.on('disconnected', () => {
+			passed++;
+		});
+
+		orm.subscribe(
+			{
+				_om_test: {
+					aggregate: {
+						count: {},
+					},
+				},
+			},
+			() => {},
+		);
+		setTimeout(() => {
+			orm.$ws.client.close();
+		}, 500);
+
+		setInterval(() => {
+			if (passed === 3) resolve();
+		}, 100);
+	});
+});
