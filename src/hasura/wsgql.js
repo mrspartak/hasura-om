@@ -1,6 +1,7 @@
 const EventEmitter = require('events');
 const ws = require('ws');
 const {SubscriptionClient} = require('subscriptions-transport-ws');
+const {mergeDeep} = require('../utils/helpers');
 
 class WsGql extends EventEmitter {
 	constructor(parameters) {
@@ -9,10 +10,12 @@ class WsGql extends EventEmitter {
 		const defaultParameters = {
 			wsUrl: null,
 			adminSecret: null,
-			reconnect: true,
-			lazy: true,
+			settings: {
+				reconnect: true,
+				lazy: true,
+			},
 		};
-		this.params = Object.assign({}, defaultParameters, parameters);
+		this.params = mergeDeep({}, defaultParameters, parameters);
 
 		if (!this.params.wsUrl) {
 			throw new Error('wsUrl is required');
@@ -29,8 +32,8 @@ class WsGql extends EventEmitter {
 		this.client = new SubscriptionClient(
 			this.params.wsUrl,
 			{
-				reconnect: this.params.reconnect,
-				lazy: this.params.lazy,
+				reconnect: this.params.settings.reconnect,
+				lazy: this.params.settings.lazy,
 				connectionParams: {
 					headers: {
 						'X-Hasura-Role': 'admin',

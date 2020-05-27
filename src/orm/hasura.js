@@ -25,6 +25,9 @@ class Hasura {
 			mutation: {
 				flatOne: true,
 			},
+			sqlConnectionSettings: {},
+			gqlConnectionSettings: {},
+			wsConnectionSettings: {},
 		};
 		this.params = __.mergeDeep({}, defaultParameters, parameters);
 
@@ -48,9 +51,21 @@ class Hasura {
 			this.params.wsUrl = this.params.graphqlUrl.replace('http://', 'ws://').replace('https://', 'wss://');
 		}
 
-		this.$sql = new Sql(this.params);
-		this.$gql = new Gql(this.params);
-		this.$ws = new WsGql(this.params);
+		this.$sql = new Sql({
+			queryUrl: this.params.queryUrl,
+			adminSecret: this.params.adminSecret,
+			settings: this.params.sqlConnectionSettings,
+		});
+		this.$gql = new Gql({
+			graphqlUrl: this.params.graphqlUrl,
+			adminSecret: this.params.adminSecret,
+			settings: this.params.gqlConnectionSettings,
+		});
+		this.$ws = new WsGql({
+			wsUrl: this.params.wsUrl,
+			adminSecret: this.params.adminSecret,
+			settings: this.params.wsConnectionSettings,
+		});
 
 		this.INITIATED = false;
 		this.tables = {};

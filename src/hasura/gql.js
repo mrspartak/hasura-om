@@ -6,8 +6,9 @@ class Gql {
 		const defaultParameters = {
 			graphqlUrl: null,
 			adminSecret: null,
+			settings: {},
 		};
-		this.params = Object.assign({}, defaultParameters, parameters);
+		this.params = __.mergeDeep({}, defaultParameters, parameters);
 
 		if (!this.params.graphqlUrl) {
 			throw new Error('graphqlUrl is required');

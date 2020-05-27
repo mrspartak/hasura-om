@@ -1,6 +1,6 @@
 {
   "name": "hasura-om",
-  "version": "0.0.15",
+  "version": "0.0.19",
   "description": "Hasura Fragment focused ORM library",
   "author": "Spartak <iam@spartak.io> (https://spartak.io/)",
   "keywords": [
@@ -57,8 +57,8 @@
       "esm"
     ],
     "failWithoutAssertions": false,
-    "concurrency": 8,
-    "timeout": "20s"
+    "concurrency": 10,
+    "timeout": "25s"
   },
   "husky": {
     "hooks": {

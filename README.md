@@ -27,7 +27,7 @@ We have a microservice infrastructure and need cross-service transactions. One w
 If you know a better way to solve this problem, you are welcome to issues or email.
 
 ## Warning! Full docs will come later
-Current version [is here](https://mrspartak.github.io/hasura-om/)
+Current guide [is here](https://mrspartak.github.io/hasura-om/)
 
 ## Todo before basic release:
 - [x] Fragment extending (v0.0.7)
@@ -36,7 +36,7 @@ Current version [is here](https://mrspartak.github.io/hasura-om/)
 - [x] Nested queries (v0.0.15)
 - [x] Hasura class extend EventEmitter (v0.0.18)
 - [ ] Refactor query builder code
-- [ ] Docs
+- [x] Docs (v0.0.19)
 - [ ] Support directives
 - [ ] Tune performance
 
@@ -60,7 +60,7 @@ const om = new Hasura({
 await om.init()
 
 //query 
-let [err, result] = om.query({
+let [err, result] = await om.query({
     user: {
         where: {
             is_live: {
@@ -117,7 +117,7 @@ result = {
 
 
 //mutation
-let [err, result] = om.mutate({
+let [err, result] = await om.mutate({
     user: {
         update: {
             where: {
@@ -198,12 +198,12 @@ The only control you have is fragments. So this library provides base fragments 
 ```javascript
 
 //here is an example of simple query
-var [err, response] = orm.query({
+var [err, response] = await orm.query({
     user: {}
 })
 
 //So here some examples with fields key
-var [err, response] = orm.query({
+var [err, response] = await orm.query({
     user: {
         fields: `
             name
@@ -246,7 +246,7 @@ let newFragment = new Fragment({
         }
     `//any from abobe
 })
-var [err, response] = orm.query({
+var [err, response] = await orm.query({
     user: {
         fragment: newFragment
     }
@@ -259,7 +259,7 @@ orm.table('user').createFragment('some_unique_name', `
         title
     }
 `)
-var [err, response] = orm.query({
+var [err, response] = await orm.query({
     user: {
         fragment: 'some_unique_name'
     }

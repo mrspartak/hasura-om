@@ -9,8 +9,9 @@ class Sql {
 		const defaultParameters = {
 			queryUrl: null,
 			adminSecret: null,
+			settings: {},
 		};
-		this.params = Object.assign({}, defaultParameters, parameters);
+		this.params = __.mergeDeep({}, defaultParameters, parameters);
 
 		if (!this.params.queryUrl) {
 			throw new Error('queryUrl is required');

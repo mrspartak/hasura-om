@@ -154,6 +154,9 @@ test.serial('test sub', async (t) => {
 });
 
 test.serial('test events connect/disconnect', (t) => {
+	t.timeout(1000);
+	let passed = 0;
+
 	const orm = new Hasura({
 		graphqlUrl: process.env.GQL_ENDPOINT,
 		adminSecret: process.env.GQL_SECRET,
@@ -168,9 +171,6 @@ test.serial('test events connect/disconnect', (t) => {
 	orm.table('_om_test').init();
 
 	return new Promise((resolve) => {
-		t.timeout(1000);
-
-		let passed = 0;
 		orm.$ws.on('connected', () => {
 			passed++;
 		});
@@ -193,7 +193,40 @@ test.serial('test events connect/disconnect', (t) => {
 		);
 		setTimeout(() => {
 			orm.$ws.client.close();
-		}, 500);
+		}, 300);
+
+		setInterval(() => {
+			if (passed === 3) resolve();
+		}, 100);
+	});
+});
+
+test.serial('test events connect/disconnect without lazy connection', (t) => {
+	t.timeout(1000);
+	let passed = 0;
+
+	const orm = new Hasura({
+		graphqlUrl: process.env.GQL_ENDPOINT,
+		adminSecret: process.env.GQL_SECRET,
+		wsConnectionSettings: {
+			lazy: false,
+		},
+	});
+
+	return new Promise((resolve) => {
+		orm.$ws.on('connected', () => {
+			passed++;
+		});
+		orm.$ws.on('connecting', () => {
+			passed++;
+		});
+		orm.$ws.on('disconnected', () => {
+			passed++;
+		});
+
+		setTimeout(() => {
+			orm.$ws.client.close();
+		}, 300);
 
 		setInterval(() => {
 			if (passed === 3) resolve();
