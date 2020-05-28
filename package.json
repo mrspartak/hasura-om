@@ -62,7 +62,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "xo --fix && ava --verbose && git add"
+      "pre-commit": "xo --fix && ava --verbose && git add ."
     }
   },
   "dependencies": {
