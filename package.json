@@ -62,7 +62,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "xo --fix && ava && git add ."
+      "pre-commit": "xo --fix && npx ava --tap | npx tap-dot && git add ."
     }
   },
   "dependencies": {
@@ -82,6 +82,7 @@
     "nodemon": "^2.0.4",
     "nyc": "^15.0.1",
     "prettier": "^2.0.5",
+    "tap-dot": "^2.0.0",
     "vuepress": "^1.5.0",
     "xo": "^0.30.0"
   }

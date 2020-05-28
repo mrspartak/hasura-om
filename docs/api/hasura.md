@@ -200,6 +200,7 @@ This method can migrate to a different place, cause it is utitilitary
     - `{array} [flatSettings]` - an array of objects key: value - path_from: path_to `[ { 'user.returning': 'user.select' } ]`
     - `{array} settings`
       - `{booleant} [flatOne = true]` - see an explanation below
+      - `{booleant} [getFirst = false]` - see an explanation below
     - `{array} parameters` - input parameters
 - **Returns:** 
   - `{function}` - function that will change response output
@@ -224,41 +225,48 @@ console.log(flatGqlResponse({
     flatSettings: [{
         'teams.select': 'teams'
     }, {
-        flatOne: true
+        flatOne: true,
+        getFirst: true
     }, ...]
 }))
 /* 
 1. data key is a default path, so no need to change it somehow, so base response is:
 let gqlResponse = {
-    teams: [
-        {
-            id: 7,
-            team_name: "test"
-        }
-    ]
+  teams: [
+    {
+      id: 7,
+      team_name: "test"
+    }
+  ]
 }
 
 2. flatSettings - {'teams.select': 'teams'} will change path 'teams' to 'teams.select'
 This is needed to make every request looks the same tableName.select, tableName.aggregate, tableName.insert etc...
 let gqlResponse = {
-    teams: {
-        select: [
-            {
-                "id": 7,
-                "team_name": "test"
-            }
-        ]
-    }
+  teams: {
+    select: [
+      {
+        id: 7,
+        team_name: "test"
+      }
+    ]
+  }
 }
 
 3. flatOne is a tricky one. It also changes a path, deleting sinle object keys. 
 In our example teams and select are both singe keys, so it will transform path 'teams.select' to ''
 let gqlResponse = [
-    {
-        "id": 7,
-        "team_name": "test"
-    }
+  {
+    id: 7,
+    team_name: "test"
+  }
 ]
+
+4. getFirst just return first entry of an array. Very useful if you want to get one user for example and you will get just user object
+let gqlResponse = {
+  id: 7,
+  team_name: "test"
+}
 */
 ```
 

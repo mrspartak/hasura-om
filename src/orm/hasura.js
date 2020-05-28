@@ -18,12 +18,24 @@ class Hasura {
 					user{select: [], aggregate: {}} -> {select: [], aggregate: {}}
 				*/
 				flatOne: true,
+				/* 
+					Returns first array entry
+				*/
+				getFirst: false,
 			},
 			subscription: {
 				flatOne: true,
+				/* 
+					Returns first array entry
+				*/
+				getFirst: false,
 			},
 			mutation: {
 				flatOne: true,
+				/* 
+					Returns first array entry
+				*/
+				getFirst: false,
 			},
 			sqlConnectionSettings: {},
 			gqlConnectionSettings: {},
@@ -395,6 +407,11 @@ class Hasura {
 		return unsub; // Unsubscribe
 	}
 
+	/* 
+		Settings
+			flatOne
+			getFirst
+	*/
 	flatGqlResponse({flatSettings, settings, parameters}) {
 		return function (response) {
 			let toReturn = {};
@@ -413,12 +430,14 @@ class Hasura {
 			Object.keys(toReturn).forEach((tableName) => {
 				if (Object.keys(toReturn[tableName]).length === 1 && settings.flatOne) {
 					toReturn[tableName] = toReturn[tableName][Object.keys(toReturn[tableName])[0]];
+					if (Array.isArray(toReturn[tableName]) && settings.getFirst) toReturn[tableName] = toReturn[tableName].shift();
 				}
 			});
 
 			// Return flatten object
 			if (Object.keys(parameters).length === 1 && settings.flatOne) {
 				toReturn = toReturn[Object.keys(parameters)[0]];
+				if (Array.isArray(toReturn) && settings.getFirst) toReturn = toReturn.shift();
 			}
 
 			return toReturn;

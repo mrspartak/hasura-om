@@ -47,7 +47,6 @@ test.serial('test option flatOne', async (t) => {
 		_om_test: {},
 	});
 	t.is(err, null);
-
 	t.true(Array.isArray(response));
 
 	var [err, response] = await orm.query(
@@ -59,8 +58,54 @@ test.serial('test option flatOne', async (t) => {
 		},
 	);
 	t.is(err, null);
-
 	t.true(Array.isArray(response._om_test.select));
+});
+
+test.serial('test option getFirst', async (t) => {
+	const orm = t.context.orm;
+
+	var [err, response] = await orm.query({
+		_om_test: {},
+	});
+	t.is(err, null);
+
+	t.true(Array.isArray(response));
+
+	var [err, response] = await orm.query(
+		{
+			_om_test: {},
+		},
+		{
+			getFirst: true,
+		},
+	);
+	t.is(err, null);
+	t.true(!Array.isArray(response));
+
+	var [err, response] = await orm.query(
+		{
+			_om_test: {},
+		},
+		{
+			flatOne: false,
+			getFirst: true,
+		},
+	);
+	t.is(err, null);
+	t.true(!Array.isArray(response._om_test));
+
+	var [err, response] = await orm.query(
+		{
+			_om_test: {},
+			_om_test_types: {},
+		},
+		{
+			getFirst: true,
+		},
+	);
+	t.is(err, null);
+	t.true(!Array.isArray(response._om_test));
+	t.true(!Array.isArray(response._om_test_types));
 });
 
 test.serial('add records with transaction', async (t) => {
@@ -234,10 +279,10 @@ test.serial('error building query', async (t) => {
 	t.true(err instanceof Error);
 });
 
-test.serial('simple add row', async (t) => {
+test.serial('simple add/update row', async (t) => {
 	const orm = t.context.orm;
 
-	const [err, response] = await orm.mutate({
+	var [err, response] = await orm.mutate({
 		_om_test: {
 			insert: {
 				objects: {
@@ -249,5 +294,56 @@ test.serial('simple add row', async (t) => {
 	t.is(err, null);
 
 	t.is(typeof response, 'object');
+	t.true(Array.isArray(response));
 	t.true(typeof response[0].id === 'number');
+
+	// Add row with returning object instead of one element array
+	var [err, response] = await orm.mutate(
+		{
+			_om_test: {
+				insert: {
+					objects: {
+						text: 'test 3',
+					},
+				},
+			},
+		},
+		{getFirst: true},
+	);
+	t.is(err, null);
+
+	t.is(typeof response, 'object');
+	t.true(typeof response.id === 'number');
+
+	const ID = response.id;
+
+	var [err, response] = await orm.mutate({
+		_om_test: {
+			update: {
+				where: {id: {_eq: ID}},
+				_set: {text: 'test_123123'},
+			},
+		},
+	});
+	t.is(err, null);
+
+	t.is(typeof response, 'object');
+	t.true(Array.isArray(response));
+	t.is(response[0].text, 'test_123123');
+
+	var [err, response] = await orm.mutate(
+		{
+			_om_test: {
+				update: {
+					where: {id: {_eq: ID}},
+					_set: {text: 'test_123213123123'},
+				},
+			},
+		},
+		{getFirst: true},
+	);
+	t.is(err, null);
+
+	t.is(typeof response, 'object');
+	t.is(response.text, 'test_123213123123');
 });

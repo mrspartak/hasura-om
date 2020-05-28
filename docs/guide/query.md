@@ -58,6 +58,20 @@ response = {
 */
 ```
 
+Getting only one row
+```javascript
+let [error, response] = await orm.query({
+    user: {
+        where: { id: { _eq: 23 } }
+    }
+}, { getFirst: true })
+/* 
+response = {
+    ...userFields
+}
+*/
+```
+
 ::: tip
 Notice how in the first example result was avialable at `response` level and in the bottom example `response.user.select`
 So if this is not convinient behavior for you, please set a setting `flatOne = false` at Hasura or query level
