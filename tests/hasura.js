@@ -64,3 +64,21 @@ test('getting table', (t) => {
 	});
 	t.true(orm.table('test') instanceof Table);
 });
+
+
+test('create table full chain', t => {
+	const orm = new Hasura({
+		graphqlUrl: 'efwehfwiefjwopeif',
+		adminSecret: 'qwdqwdqwdqwd',
+	});
+
+	orm.createTable({  name: 'user' })
+		.createField({name: 'id', 'isPrimary': true})
+		.createField({name: 'name'})
+		.generateBaseFragments()
+	
+	t.is(orm.table('user').field('id').isPrimary, true);
+	t.is(orm.table('user').field('name').isPrimary, false);
+	t.is(orm.table('user').fragment('base').name(), 'base_fragment_user');
+	t.is(orm.table('user').fragment('pk').fields(), 'id');
+});

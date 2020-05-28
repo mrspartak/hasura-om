@@ -1,20 +1,20 @@
 require('dotenv').config();
 const test = require('ava');
-const Sql = require('../src/hasura/sql');
+const Query = require('../src/hasura/query');
 const Gql = require('../src/hasura/gql');
 const Wsgql = require('../src/hasura/wsgql');
 
 test('Sql throws without params', (t) => {
 	t.throws(
 		() => {
-			const request = new Sql();
+			const request = new Query();
 		},
 		{instanceOf: Error},
 	);
 
 	t.throws(
 		() => {
-			const request = new Sql({
+			const request = new Query({
 				queryUrl: 123,
 			});
 		},
@@ -23,7 +23,7 @@ test('Sql throws without params', (t) => {
 
 	t.throws(
 		() => {
-			const request = new Sql({
+			const request = new Query({
 				queryUrl: process.env.GQL_ENDPOINT.replace('/v1/graphql', '/v1/query'),
 			});
 		},
@@ -32,23 +32,25 @@ test('Sql throws without params', (t) => {
 });
 
 test('Sql failed query', async (t) => {
-	const request = new Sql({
+	const request = new Query({
 		queryUrl: '123',
 		adminSecret: '123',
 	});
 
-	const [err, data] = await request.run('123');
+	const [err, data] = await request.run('run_sql', '123');
 	t.true(err instanceof Error);
 	t.is(data, undefined);
 });
 
 test('Sql success query', async (t) => {
-	const request = new Sql({
+	const request = new Query({
 		queryUrl: process.env.GQL_ENDPOINT.replace('/v1/graphql', '/v1/query'),
 		adminSecret: process.env.GQL_SECRET,
 	});
 
-	const [err, data] = await request.run('SELECT 1 as test');
+	const [err, data] = await request.run('run_sql', {
+		sql: 'SELECT 1 as test',
+	});
 	t.is(err, null);
 	t.deepEqual(data, [{test: '1'}]);
 });

@@ -8,7 +8,7 @@ test.before(async (t) => {
 		graphqlUrl: process.env.GQL_ENDPOINT,
 		adminSecret: process.env.GQL_SECRET,
 	});
-	await orm.init();
+	await orm.generateTablesFromAPI();
 
 	t.context.orm = orm;
 });

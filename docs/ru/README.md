@@ -1,7 +1,7 @@
 ---
 home: true
 heroImage: /hasura_icon_blue.svg
-actionText: Get started
+actionText: Начать знакомство
 actionLink: /guide/
 ---
 ```
@@ -12,10 +12,10 @@ npm i hasura-om
 const { Hasura } = require('hasura-om')
 
 const orm = new Hasura({
-    graphqlUrl: 'your hasura endpoint',
-    adminSecret: 'your hasura admin secret'
+    graphqlUrl: 'ссылка на Hasura graphql эндпоинт',
+    adminSecret: 'секретный ключ'
 })
-await orm.generateTablesFromAPI()
+await orm.init()
 
 let [err, result] = await orm.query({
     user: {

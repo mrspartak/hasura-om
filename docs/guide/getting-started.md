@@ -18,12 +18,12 @@ const orm = new Hasura({
     graphqlUrl: 'your hasura endpoint',
     adminSecret: 'your hasura admin secret'
 })
-await orm.init()
+await orm.generateTablesFromAPI()
 ```
 
 Module hasura-om return all basic classes: Hasura, Table, Field, Fragment
 
-orm.init() makes request to Hasura to get all tables, fields, primary keys and creates basic fragments for all tables
+orm.generateTablesFromAPI() makes request to Hasura to get all tables, fields, primary keys and creates basic fragments for all tables
 
 
 ## Basic fragments

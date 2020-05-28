@@ -28,4 +28,14 @@ export default {
   padding-bottom 2rem
   display block
 
+.content__default h3
+  margin-top: 0 !important
+
+.content__default h3:first-child
+  margin-top: -3.1rem !important
+
+.content__default ul strong
+  margin: 1.2em 0;
+  line-height: 1.6em;
+  display: block;
 </style>

@@ -7,7 +7,7 @@ test.before(async (t) => {
 		graphqlUrl: process.env.GQL_ENDPOINT,
 		adminSecret: process.env.GQL_SECRET,
 	});
-	await orm.init();
+	await orm.generateTablesFromAPI();
 
 	t.context.orm = orm;
 });
@@ -164,11 +164,11 @@ test.serial('test events connect/disconnect', (t) => {
 	orm.createTable({
 		name: '_om_test',
 	});
-	orm.table('_om_test').setField({
+	orm.table('_om_test').createField({
 		name: 'id',
 		type: 'Int',
 	});
-	orm.table('_om_test').init();
+	orm.table('_om_test').generateBaseFragments();
 
 	return new Promise((resolve) => {
 		orm.$ws.on('connected', () => {

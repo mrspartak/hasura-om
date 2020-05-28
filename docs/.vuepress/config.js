@@ -38,6 +38,30 @@ module.exports = {
                     ['/api/fragment', 'Fragment'],
                 ]
             }
-        ]
+        ],
+        locales: {
+            '/': {
+                selectText: 'Languages',
+                label: 'English',
+                ariaLabel: 'Languages',
+            },
+            '/ru/': {
+                selectText: 'Язык',
+                label: 'Русский (черновик)',
+                ariaLabel: 'Язык',
+            }
+        }
+    },
+    locales: {
+        '/': {
+            lang: 'en-US', // this will be set as the lang attribute on <html>
+            title: 'Hasura ORM',
+            description: 'Fragment oriented Hasura ORM for backends with many stuff "from the box"'
+        },
+        '/ru/': {
+            lang: 'ru-RU',
+            title: 'Hasura ORM',
+            description: 'Библиотека Hasura ORM основанная на написании фрагментов. Большая часть функционала работает "из коробки"'
+        }
     }
 }

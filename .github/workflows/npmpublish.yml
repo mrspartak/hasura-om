@@ -5,20 +5,6 @@ on:
     types: [created]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    name: Test on node 12
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12
-      - run: npm install
-      - run: npm test
-        env:
-          GQL_ENDPOINT: ${{secrets.GQL_ENDPOINT}}
-          GQL_SECRET: ${{secrets.GQL_SECRET}}
-
   publish-npm:
     needs: build
     runs-on: ubuntu-latest

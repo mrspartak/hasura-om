@@ -34,8 +34,15 @@ class Table {
 	}
 
 	init() {
+		console.warn('this method is changed! Please use generateBaseFragments instead');
+		this.generateBaseFragments();
+	}
+
+	generateBaseFragments() {
+		// Base fragment with all fields
 		this.createFragment('base', this.fields);
 
+		// Primary keys fragment
 		const pkeys = Object.keys(this.fields)
 			.filter((key) => this.field(key).isPrimary)
 			.reduce((result, key) => ((result[key] = this.field(key)), result), {});
@@ -53,8 +60,10 @@ class Table {
 		return this.fields[name];
 	}
 
-	setField(parameters) {
+	createField(parameters) {
 		this.fields[parameters.name] = new Field(parameters);
+
+		return this;
 	}
 
 	setPrimarykey(parameters) {
@@ -69,6 +78,7 @@ class Table {
 		}
 
 		this.field(parameters.name).isPrimary = true;
+		return this;
 	}
 
 	fragment(name = 'base') {
@@ -294,6 +304,10 @@ class Table {
 		};
 	}
 
+	/* 
+		Fields
+		fragment
+	*/
 	getFieldsFromParams(parameters) {
 		let fields = '';
 		let fragment = '';
@@ -334,6 +348,24 @@ class Table {
 		return {fragment, fragmentName, fields, fragmentOperationArguments};
 	}
 
+	/* 
+		Fields
+
+		count
+		  columns
+		  distinct
+		  
+		avg
+		max
+		min
+		stddev
+		stddev_pop
+		stddev_samp
+		sum
+		var_pop
+		var_samp
+		variance
+	*/
 	getFieldsFromAggregate(parameters) {
 		let fields = '';
 		let fragmentOperationArguments = [];

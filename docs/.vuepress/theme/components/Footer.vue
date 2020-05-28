@@ -1,5 +1,7 @@
 <template>
 	<footer class="footer">
+		This framework is not affiliated with the Hasura team.
+		<br><br>
 		MIT Licensed | 2020-present
 		<a
 			href="https://github.com/mrspartak"

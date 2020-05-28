@@ -26,10 +26,10 @@
 			</template>
 			<template #bottom>
 				<slot name="page-bottom" />
+        <Footer />
 			</template>
 		</Page>
 
-		<Footer />
 	</div>
 </template>
 

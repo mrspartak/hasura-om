@@ -57,16 +57,18 @@
     >
       {{ data.footer }}
     </div>
+    <Footer />
   </main>
 </template>
 
 <script>
 import NavLink from '@theme/components/NavLink.vue'
+import Footer from '@theme/components/Footer.vue'
 
 export default {
   name: 'Home',
 
-  components: { NavLink },
+  components: { NavLink, Footer },
 
   computed: {
     data () {

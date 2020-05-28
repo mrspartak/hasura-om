@@ -28,7 +28,7 @@ test('throws adding field', (t) => {
 
 	t.throws(
 		() => {
-			table.setField();
+			table.createField();
 		},
 		{instanceOf: Error},
 	);
@@ -39,7 +39,7 @@ test('succesfuly add field', (t) => {
 		name: 'test',
 	});
 
-	table.setField({
+	table.createField({
 		name: 'test',
 		type: 'Integer',
 	});
@@ -65,7 +65,7 @@ test('testing primary key', (t) => {
 		name: 'test',
 	});
 
-	table.setField({
+	table.createField({
 		name: 'test',
 	});
 
@@ -117,17 +117,17 @@ test('fragment found', (t) => {
 	const table = new Table({
 		name: 'test',
 	});
-	table.setField({
+	table.createField({
 		name: 'id',
 		type: 'Integer',
 	});
-	table.init();
+	table.generateBaseFragments();
 
 	t.true(table.fragment('base') instanceof Fragment);
 	t.is(table.fragment('pk'), false);
 
 	table.field('id').isPrimary = true;
-	table.init();
+	table.generateBaseFragments();
 
 	t.true(table.fragment('pk') instanceof Fragment);
 
@@ -144,7 +144,7 @@ test('build fields for query', (t) => {
 	const table = new Table({
 		name: 'test',
 	});
-	table.setField({
+	table.createField({
 		name: 'id',
 		type: 'Integer',
 	});
@@ -157,7 +157,7 @@ test('build fields for query', (t) => {
 		{instanceOf: Error},
 	);
 
-	table.init();
+	table.generateBaseFragments();
 
 	/*
 		When no input specified, we use base fragment

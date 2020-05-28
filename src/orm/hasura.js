@@ -1,4 +1,4 @@
-const Sql = require('../hasura/sql');
+const Query = require('../hasura/query');
 const Gql = require('../hasura/gql');
 const WsGql = require('../hasura/wsgql');
 const Table = require('./table');
@@ -27,7 +27,10 @@ class Hasura {
 			},
 			sqlConnectionSettings: {},
 			gqlConnectionSettings: {},
-			wsConnectionSettings: {},
+			wsConnectionSettings: {
+				lazy: true,
+				reconnect: true,
+			},
 		};
 		this.params = __.mergeDeep({}, defaultParameters, parameters);
 
@@ -51,33 +54,44 @@ class Hasura {
 			this.params.wsUrl = this.params.graphqlUrl.replace('http://', 'ws://').replace('https://', 'wss://');
 		}
 
-		this.$sql = new Sql({
+		// Hasura meta API endpoint
+		this.$query = new Query({
 			queryUrl: this.params.queryUrl,
 			adminSecret: this.params.adminSecret,
 			settings: this.params.sqlConnectionSettings,
 		});
+
+		// Hasura Graphql endpoint
 		this.$gql = new Gql({
 			graphqlUrl: this.params.graphqlUrl,
 			adminSecret: this.params.adminSecret,
 			settings: this.params.gqlConnectionSettings,
 		});
+
+		// Hasura subscription WS endpoint
 		this.$ws = new WsGql({
 			wsUrl: this.params.wsUrl,
 			adminSecret: this.params.adminSecret,
 			settings: this.params.wsConnectionSettings,
 		});
 
-		this.INITIATED = false;
 		this.tables = {};
 	}
 
 	async init() {
+		console.warn('this method is changed! Please use generateTablesFromAPI instead');
+		await this.generateTablesFromAPI();
+	}
+
+	async generateTablesFromAPI() {
 		// Get tables
-		var [err, data] = await this.$sql.run(`
-            SELECT table_name, table_type
-            FROM information_schema.tables
-            WHERE table_schema='public';
-        `);
+		var [err, data] = await this.$query.run('run_sql', {
+			sql: `
+				SELECT table_name, table_type
+				FROM information_schema.tables
+				WHERE table_schema='public';
+			`,
+		});
 		if (err) {
 			throw err;
 		}
@@ -90,17 +104,19 @@ class Hasura {
 		});
 
 		// Get table fields
-		var [err, data] = await this.$sql.run(`
-            SELECT table_name, column_name, data_type, udt_name
-            FROM information_schema.columns
-            WHERE table_schema = 'public';
-        `);
+		var [err, data] = await this.$query.run('run_sql', {
+			sql: `
+				SELECT table_name, column_name, data_type, udt_name
+				FROM information_schema.columns
+				WHERE table_schema = 'public';
+			`,
+		});
 		if (err) {
 			throw err;
 		}
 
 		data.forEach((row) => {
-			this.table(row.table_name).setField({
+			this.table(row.table_name).createField({
 				name: row.column_name,
 				type: row.data_type,
 				udt: row.udt_name,
@@ -108,20 +124,22 @@ class Hasura {
 		});
 
 		// Get primary keys
-		var [err, data] = await this.$sql.run(`
-            select
-                kcu.table_name,
-                tco.constraint_name,
-                kcu.ordinal_position as position,
-                kcu.column_name as key_column
-            from information_schema.table_constraints tco
-            join information_schema.key_column_usage kcu 
-                on kcu.constraint_name = tco.constraint_name
-                and kcu.constraint_schema = tco.constraint_schema
-                and kcu.constraint_name = tco.constraint_name
-            where tco.constraint_type = 'PRIMARY KEY' AND kcu.table_schema = 'public'
-            order by kcu.table_schema, kcu.table_name, position;
-        `);
+		var [err, data] = await this.$query.run('run_sql', {
+			sql: `
+				select
+					kcu.table_name,
+					tco.constraint_name,
+					kcu.ordinal_position as position,
+					kcu.column_name as key_column
+				from information_schema.table_constraints tco
+				join information_schema.key_column_usage kcu 
+					on kcu.constraint_name = tco.constraint_name
+					and kcu.constraint_schema = tco.constraint_schema
+					and kcu.constraint_name = tco.constraint_name
+				where tco.constraint_type = 'PRIMARY KEY' AND kcu.table_schema = 'public'
+				order by kcu.table_schema, kcu.table_name, position;
+			`,
+		});
 		if (err) {
 			throw err;
 		}
@@ -134,10 +152,8 @@ class Hasura {
 		});
 
 		Object.keys(this.tables).forEach((tableName) => {
-			this.table(tableName).init();
+			this.table(tableName).generateBaseFragments();
 		});
-
-		this.INITIATED = true;
 	}
 
 	table(name) {
@@ -150,6 +166,8 @@ class Hasura {
 
 	createTable({name, type} = {}) {
 		this.tables[name] = new Table({name, type});
+
+		return this.table(name);
 	}
 
 	/*
@@ -188,7 +206,7 @@ class Hasura {
 		const toReturn = this.flatGqlResponse({
 			flatSettings,
 			settings,
-			params: parameters,
+			parameters,
 		})(response);
 
 		return [null, toReturn];
@@ -309,7 +327,7 @@ class Hasura {
 		const toReturn = this.flatGqlResponse({
 			flatSettings,
 			settings,
-			params: parameters,
+			parameters,
 		})(response);
 
 		return [null, toReturn];
@@ -364,7 +382,7 @@ class Hasura {
 		const flat = this.flatGqlResponse({
 			flatSettings,
 			settings,
-			params: parameters,
+			parameters,
 		});
 
 		const unsub = this.$ws.run({
@@ -377,7 +395,7 @@ class Hasura {
 		return unsub; // Unsubscribe
 	}
 
-	flatGqlResponse({flatSettings, settings, params}) {
+	flatGqlResponse({flatSettings, settings, parameters}) {
 		return function (response) {
 			let toReturn = {};
 
@@ -399,8 +417,8 @@ class Hasura {
 			});
 
 			// Return flatten object
-			if (Object.keys(params).length === 1 && settings.flatOne) {
-				toReturn = toReturn[Object.keys(params)[0]];
+			if (Object.keys(parameters).length === 1 && settings.flatOne) {
+				toReturn = toReturn[Object.keys(parameters)[0]];
 			}
 
 			return toReturn;

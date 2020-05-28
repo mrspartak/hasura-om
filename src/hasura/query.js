@@ -1,10 +1,7 @@
 const axios = require('axios');
 const __ = require('../utils/helpers');
 
-class Sql {
-	/**
-	 * @param {object} params
-	 */
+class Query {
 	constructor(parameters) {
 		const defaultParameters = {
 			queryUrl: null,
@@ -36,18 +33,13 @@ class Sql {
 		});
 	}
 
-	/**
-	 * @param {string} sql
-	 */
-	async run(sql) {
+	async run(type, args) {
 		const [err, {data = null} = {}] = await __.to(
 			this.$http.request({
 				method: 'POST',
 				data: {
-					type: 'run_sql',
-					args: {
-						sql,
-					},
+					type,
+					args,
 				},
 			}),
 		);
@@ -55,18 +47,22 @@ class Sql {
 			return [err];
 		}
 
-		const fields = data.result.shift();
-		const result = [];
-		data.result.forEach((element) => {
-			const temporary = {};
-			element.forEach((value, index) => {
-				temporary[fields[index]] = value;
+		let result = [];
+		if (type === 'run_sql') {
+			const fields = data.result.shift();
+			data.result.forEach((element) => {
+				const temporary = {};
+				element.forEach((value, index) => {
+					temporary[fields[index]] = value;
+				});
+				result.push(temporary);
 			});
-			result.push(temporary);
-		});
+		} else {
+			result = data;
+		}
 
 		return [null, result];
 	}
 }
 
-module.exports = Sql;
+module.exports = Query;

@@ -22,7 +22,7 @@ const orm = new Hasura({
         lazy: false //here you can set a connection just with Hasura object
     }
 }) 
-await orm.init()
+await orm.generateTablesFromAPI()
 ```
 
 ## Subscribing
