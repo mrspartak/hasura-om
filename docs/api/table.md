@@ -29,13 +29,13 @@ userTable.generateBaseFragments()
 ```
 
 ### `this.createField( parameters )`
-This a [```Field```](/api/field) constructor
+This a [```Field```](field) constructor
 - **Arguments:**
   - ```{object} parameters```
     - ```{string} name```
     - ```{string} [type]```
     - ```{boolean} [isPrimary]```
-- **Returns:** current [```{Table}```](/api/table) instance
+- **Returns:** current [```{Table}```](table) instance
 - **Example:**
 ```javascript
 userTable.createField({
@@ -46,7 +46,7 @@ userTable.createField({
 ### `this.field( name )`
 - **Arguments:**
   - ```{string} name``` of the field
-- **Returns:** [```{Field}```](/api/field) Instance
+- **Returns:** [```{Field}```](field) Instance
 - **Example:**
 ```javascript
 console.log(userTable.field('id').isPrimary)

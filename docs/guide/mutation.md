@@ -62,6 +62,7 @@ let [err, response] = await orm.mutate({
 ::: tip
 Response in mutations also modified to return a most simple structure.
 Use a setting `flatOne = false` at Hasura or query level if you want more predictable structure. 
+[Read more in API](../api/hasura#this-flatgqlresponse-flatsettings-settings-parameters)
 :::
 
 ## Update

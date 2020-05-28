@@ -44,12 +44,12 @@ await orm.generateTablesFromAPI()
 ```
 
 ### `this.createTable( parameters )`
-This a [`Table`](/api/table) constructor
+This a [`Table`](table) constructor
 - **Arguments:**
   - `{object} parameters`
     - `{string} name`
     - `{string} [type]`
-- **Returns:** [`{Table}`](/api/table) Instance
+- **Returns:** [`{Table}`](table) Instance
 - **Example:**
 ```javascript
 orm.createTable({
@@ -60,7 +60,7 @@ orm.createTable({
 ### `this.table( name )`
 - **Arguments:**
   - `{string} name`
-- **Returns:** [`{Table}`](/api/table) Instance
+- **Returns:** [`{Table}`](table) Instance
 - **Example:**
 ```javascript
 console.log(orm.table('user').field('id').isPrimary)
@@ -76,7 +76,7 @@ console.log(orm.table('user').field('id').isPrimary)
         - `{integer} [offset]` - offset
         - `{object} [order_by]` - order_by object ` { last_seen: 'desc' } `
         - `{string} [distinct_on]` - distinct_on ` type `
-        - `{string | array | object} [fields]` - you can define fields just like in [`{Fragment}`](/api/fragment) Instance
+        - `{string | array | object} [fields]` - you can define fields just like in [`{Fragment}`](fragment) Instance
         - `{string | Fragment} [fragment]` - `name` of Fragment or a `Fragment` instance
       - `{object} aggregate` - aggregate query
         - `{object} [where]` - where object ` { age :{ _gt: 18 } } `
@@ -84,7 +84,7 @@ console.log(orm.table('user').field('id').isPrimary)
         - `{integer} [offset]` - offset
         - `{object} [order_by]` - order_by object ` { last_seen: 'desc' } `
         - `{string} [distinct_on]` - distinct_on ` type `
-        - `{string | array | object} [fields]` - you can define aggregate by yourself just like in [`{Fragment}`](/api/fragment) Instance
+        - `{string | array | object} [fields]` - you can define aggregate by yourself just like in [`{Fragment}`](fragment) Instance
         - `{object} count` - can leave empty if you need just count all the fields
           - `{string} columns`
           - `{boolean} distinct`
@@ -127,17 +127,17 @@ console.log(response)
     - `{object} tablename*` - here you should put exact table `name`
       - `{object} insert` - Insert mutation
         - `{object | array} object` - object or array of object defining inserting row. Of course you can inserted nested rows too
-        - `{string | array | object} [fields]` - you can define fields just like in [`{Fragment}`](/api/fragment) Instance
+        - `{string | array | object} [fields]` - you can define fields just like in [`{Fragment}`](fragment) Instance
         - `{string | Fragment} [fragment]` - `name` of Fragment or a `Fragment` instance
       - `{object} update` - Update mutation
         - `{object} where` - where object ` { age :{ _gt: 18 } } `
         - `{object} _set` - set object ` { age : 21 } `
         - `{object} _inc` - increment object ` { age : 2 } `
-        - `{string | array | object} [fields]` - you can define fields just like in [`{Fragment}`](/api/fragment) Instance
+        - `{string | array | object} [fields]` - you can define fields just like in [`{Fragment}`](fragment) Instance
         - `{string | Fragment} [fragment]` - `name` of Fragment or a `Fragment` instance
       - `{object} delete` - Delete mutation
         - `{object} where` - where object ` { age :{ _gt: 18 } } `
-        - `{string | array | object} [fields]` - you can define fields just like in [`{Fragment}`](/api/fragment) Instance
+        - `{string | array | object} [fields]` - you can define fields just like in [`{Fragment}`](fragment) Instance
         - `{string | Fragment} [fragment]` - `name` of Fragment or a `Fragment` instance 
   - `{object} [settings]`
     - `{boolean} [flatOne]` - Response manipulation. Please read [flatOne](#this-flatgqlresponse-flatsettings-settings-parameters) method

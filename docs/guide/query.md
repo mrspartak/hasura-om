@@ -61,6 +61,7 @@ response = {
 ::: tip
 Notice how in the first example result was avialable at `response` level and in the bottom example `response.user.select`
 So if this is not convinient behavior for you, please set a setting `flatOne = false` at Hasura or query level
+[Read more in API](../api/hasura#this-flatgqlresponse-flatsettings-settings-parameters)
 :::
 
 ## Query with nested field argumets

@@ -28,7 +28,7 @@ orm.generateTablesFromAPI() makes request to Hasura to get all tables, fields, p
 
 ## Basic fragments
 
-Read more about [creating fragments](/guide/create-fragment) or [fragment api](/api/fragment)
+Read more about [creating fragments](create-fragment) or [fragment api](../api/fragment)
 
 ```javascript
 let baseFragment = orm.table('user').fragment('base')
@@ -53,7 +53,7 @@ let pkFragment = orm.table('user').fragment('pk')
 
 ## Basic query
 
-Read more about [making queries](/guide/query)
+Read more about [making queries](query) or [query api](../api/hasura#async-this-query-parameters-settings)
 
 ```javascript
 let [err, result] = await orm.query({
@@ -93,7 +93,7 @@ let [err, result] = await orm.query({
 
 ## Basic mutation
 
-Read more about [making mutations](/guide/mutation)
+Read more about [making mutations](mutation) or [mutation api](../api/hasura#async-this-mutate-parameters-settings)
 
 ```javascript
 let [err, result] = om.mutate({
@@ -133,7 +133,7 @@ let [err, result] = om.mutate({
 
 ## Basic subscription
 
-Read more about [subscribing](/guide/subscribe)
+Read more about [subscribing](subscribe) or [subscribe api](../api/hasura#async-this-subscribe-parameters-callback-settings)
 
 ```javascript
 let unsub = om.subscribe({
