@@ -1,6 +1,6 @@
 {
   "name": "hasura-om",
-  "version": "0.0.19",
+  "version": "1.0.0",
   "description": "Hasura Fragment focused ORM library",
   "author": "Spartak <iam@spartak.io> (https://spartak.io/)",
   "keywords": [
@@ -62,7 +62,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "xo --fix"
+      "pre-commit": "xo --fix && npm test && git add"
     }
   },
   "dependencies": {
