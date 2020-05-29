@@ -46,6 +46,27 @@ test('Sql success query', async (t) => {
 	t.deepEqual(data, [{test: '1'}]);
 });
 
+test('Sql success query after config update', async (t) => {
+	const request = new Query({
+		queryUrl: process.env.GQL_ENDPOINT.replace('/v1/graphql', '/v1/query'),
+		adminSecret: process.env.GQL_SECRET,
+	});
+
+	request.updateParams({
+		queryUrl: process.env.GQL_ENDPOINT.replace('/v1/graphql', '/v1/query'),
+		settings: {
+			test: 1,
+		},
+	});
+
+	const [err, data] = await request.run('run_sql', {
+		sql: 'SELECT 1 as test',
+	});
+	t.is(err, null);
+	t.deepEqual(data, [{test: '1'}]);
+	t.is(request.params.settings.test, 1);
+});
+
 test('Gql throws without params', (t) => {
 	t.throws(
 		() => {
@@ -103,6 +124,33 @@ test('Gql success query', async (t) => {
 	});
 	t.is(err, null);
 	t.true(data._om_test.length >= 0);
+});
+
+test('Gql success query after config update', async (t) => {
+	const request = new Gql({
+		graphqlUrl: process.env.GQL_ENDPOINT,
+		adminSecret: process.env.GQL_SECRET,
+	});
+
+	request.updateParams({
+		graphqlUrl: process.env.GQL_ENDPOINT,
+		settings: {
+			test: 1,
+		},
+	});
+
+	const [err, data] = await request.run({
+		query: `
+        query TestQuery {
+            _om_test(limit: 1) {
+              id
+            }
+          }
+        `,
+	});
+	t.is(err, null);
+	t.true(data._om_test.length >= 0);
+	t.is(request.params.settings.test, 1);
 });
 
 test('Wsgql throws without params', (t) => {

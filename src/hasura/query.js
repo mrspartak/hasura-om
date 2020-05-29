@@ -18,14 +18,15 @@ class Query {
 			throw new TypeError('queryUrl must be Url format');
 		}
 
-		this.$http = axios.create({
-			baseURL: this.params.queryUrl,
-			headers: {
-				'Content-Type': 'application/json',
-				'X-Hasura-Role': 'admin',
-				'x-hasura-admin-secret': this.params.adminSecret,
-			},
-			json: true,
+		this.$http = axios.create(this.__generateAxiosConfig());
+	}
+
+	updateParams(parameters) {
+		this.params = __.mergeDeep({}, this.params, parameters);
+
+		const newAxiosConfig = this.__generateAxiosConfig();
+		Object.keys(newAxiosConfig).forEach((key) => {
+			this.$http.defaults[key] = newAxiosConfig[key];
 		});
 	}
 
@@ -62,6 +63,18 @@ class Query {
 		}
 
 		return [null, result];
+	}
+
+	__generateAxiosConfig() {
+		return {
+			baseURL: this.params.queryUrl,
+			headers: {
+				'Content-Type': 'application/json',
+				'X-Hasura-Role': 'admin',
+				'x-hasura-admin-secret': this.params.adminSecret,
+			},
+			json: true,
+		};
 	}
 }
 

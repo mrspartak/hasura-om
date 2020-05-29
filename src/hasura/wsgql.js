@@ -73,6 +73,10 @@ class WsGql extends EventEmitter {
 		});
 	}
 
+	updateParams(parameters) {
+		this.params = mergeDeep({}, this.params, parameters);
+	}
+
 	run({query, variables, callback, flat = (data) => data}) {
 		if (typeof query !== 'string') {
 			throw new TypeError('query must be a string');

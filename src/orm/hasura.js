@@ -92,6 +92,30 @@ class Hasura {
 		this.tables = {};
 	}
 
+	updateParams(parameters) {
+		this.params = __.mergeDeep({}, this.params, parameters);
+
+		this.$query.updateParams({
+			queryUrl: this.params.queryUrl,
+			adminSecret: this.params.adminSecret,
+			settings: this.params.sqlConnectionSettings,
+		});
+		this.$gql.updateParams({
+			graphqlUrl: this.params.graphqlUrl,
+			adminSecret: this.params.adminSecret,
+			hasuraRole: this.params.hasuraRole,
+			jwt: this.params.jwt,
+			settings: this.params.gqlConnectionSettings,
+		});
+		this.$ws.updateParams({
+			wsUrl: this.params.wsUrl,
+			adminSecret: this.params.adminSecret,
+			hasuraRole: this.params.hasuraRole,
+			jwt: this.params.jwt,
+			settings: this.params.wsConnectionSettings,
+		});
+	}
+
 	async init() {
 		console.warn('this method is changed! Please use generateTablesFromAPI instead');
 		await this.generateTablesFromAPI();

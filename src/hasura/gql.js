@@ -20,27 +20,15 @@ class Gql {
 			throw new TypeError('graphqlUrl must be Url format');
 		}
 
-		let headers = {
-			'Content-Type': 'application/json',
-		};
-		if (this.params.adminSecret) {
-			headers = {
-				...headers,
-				'X-Hasura-Role': 'admin',
-				'x-hasura-admin-secret': this.params.adminSecret,
-			};
-		} else if (this.params.jwt) {
-			headers = {
-				...headers,
-				'X-Hasura-Role': this.params.hasuraRole || 'user',
-				Authorization: `Bearer ${this.params.jwt}`,
-			};
-		}
+		this.$http = axios.create(this.__generateAxiosConfig());
+	}
 
-		this.$http = axios.create({
-			baseURL: this.params.graphqlUrl,
-			headers,
-			json: true,
+	updateParams(parameters) {
+		this.params = __.mergeDeep({}, this.params, parameters);
+
+		const newAxiosConfig = this.__generateAxiosConfig();
+		Object.keys(newAxiosConfig).forEach((key) => {
+			this.$http.defaults[key] = newAxiosConfig[key];
 		});
 	}
 
@@ -63,6 +51,31 @@ class Gql {
 		}
 
 		return [null, data.data];
+	}
+
+	__generateAxiosConfig() {
+		let headers = {
+			'Content-Type': 'application/json',
+		};
+		if (this.params.adminSecret) {
+			headers = {
+				...headers,
+				'X-Hasura-Role': 'admin',
+				'x-hasura-admin-secret': this.params.adminSecret,
+			};
+		} else if (this.params.jwt) {
+			headers = {
+				...headers,
+				'X-Hasura-Role': this.params.hasuraRole || 'user',
+				Authorization: `Bearer ${this.params.jwt}`,
+			};
+		}
+
+		return {
+			baseURL: this.params.graphqlUrl,
+			headers,
+			json: true,
+		};
 	}
 }
 
