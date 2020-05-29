@@ -10,6 +10,8 @@ class WsGql extends EventEmitter {
 		const defaultParameters = {
 			wsUrl: null,
 			adminSecret: null,
+			jwt: null,
+			hasuraRole: null,
 			settings: {
 				reconnect: true,
 				lazy: true,
@@ -25,8 +27,18 @@ class WsGql extends EventEmitter {
 			throw new TypeError('wsUrl must be Url format');
 		}
 
-		if (!this.params.adminSecret) {
-			throw new Error('adminSecret is required');
+		let headers = {};
+		if (this.params.adminSecret) {
+			headers = {
+				'X-Hasura-Role': 'admin',
+				'x-hasura-admin-secret': this.params.adminSecret,
+			};
+		} else if (this.params.jwt) {
+			headers = {
+				...headers,
+				'X-Hasura-Role': this.params.hasuraRole || 'user',
+				Authorization: `Bearer ${this.params.jwt}`,
+			};
 		}
 
 		this.client = new SubscriptionClient(
@@ -35,10 +47,7 @@ class WsGql extends EventEmitter {
 				reconnect: this.params.settings.reconnect,
 				lazy: this.params.settings.lazy,
 				connectionParams: {
-					headers: {
-						'X-Hasura-Role': 'admin',
-						'x-hasura-admin-secret': this.params.adminSecret,
-					},
+					headers,
 				},
 			},
 			ws,

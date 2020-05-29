@@ -35,11 +35,14 @@ Current guide [is here](https://mrspartak.github.io/hasura-om/)
 - [x] Nested queries (v0.0.15)
 - [x] Hasura class extend EventEmitter (v0.0.18)
 - [x] Docs (v0.0.19)
+- [x] Browser bundle (v1.3.0) with bundler only
+- [x] Jwt authorization support (v1.3.0)
+- [ ] Cache interface
 - [ ] Refactor query builder code
 - [ ] Support directives
 - [ ] Support new Hasura event scheduler
 - [ ] Tune performance
-- [ ] Browser bundle
+
 
 ## Simple example
 ```javascript

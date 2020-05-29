@@ -240,7 +240,6 @@ test.serial('failing transaction', async (t) => {
 			},
 		},
 	});
-
 	t.true(err instanceof Error);
 
 	var [err, response] = await orm.query({

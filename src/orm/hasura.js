@@ -11,6 +11,8 @@ class Hasura {
 			queryUrl: null,
 			wsUrl: null,
 			adminSecret: null,
+			hasuraRole: null,
+			jwt: null,
 			query: {
 				/*
 					Tries to flat object parenting
@@ -54,10 +56,6 @@ class Hasura {
 			throw new TypeError('graphqlUrl must be Url format');
 		}
 
-		if (!this.params.adminSecret) {
-			throw new Error('adminSecret is required');
-		}
-
 		if (!this.params.queryUrl) {
 			this.params.queryUrl = this.params.graphqlUrl.replace('/v1/graphql', '/v1/query');
 		}
@@ -77,6 +75,8 @@ class Hasura {
 		this.$gql = new Gql({
 			graphqlUrl: this.params.graphqlUrl,
 			adminSecret: this.params.adminSecret,
+			hasuraRole: this.params.hasuraRole,
+			jwt: this.params.jwt,
 			settings: this.params.gqlConnectionSettings,
 		});
 
@@ -84,6 +84,8 @@ class Hasura {
 		this.$ws = new WsGql({
 			wsUrl: this.params.wsUrl,
 			adminSecret: this.params.adminSecret,
+			hasuraRole: this.params.hasuraRole,
+			jwt: this.params.jwt,
 			settings: this.params.wsConnectionSettings,
 		});
 

@@ -80,7 +80,13 @@ test('getting fragment arguments', (t) => {
 			],
 		],
 	});
-	t.deepEqual(fragment2.arguments(), ['$logo_limit: Int', '$logo_offset: Int', '$logo_where: images_bool_exp', '$logo_order_by: [images_order_by!]', '$logo_distinct_on: [images_select_column!]']);
+	t.deepEqual(fragment2.arguments(), [
+		'$logo_limit: Int',
+		'$logo_offset: Int',
+		'$logo_where: images_bool_exp',
+		'$logo_order_by: [images_order_by!]',
+		'$logo_distinct_on: [images_select_column!]',
+	]);
 });
 
 test('checking fragment decalration', (t) => {

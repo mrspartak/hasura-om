@@ -18,10 +18,6 @@ class Query {
 			throw new TypeError('queryUrl must be Url format');
 		}
 
-		if (!this.params.adminSecret) {
-			throw new Error('adminSecret is required');
-		}
-
 		this.$http = axios.create({
 			baseURL: this.params.queryUrl,
 			headers: {
@@ -34,6 +30,10 @@ class Query {
 	}
 
 	async run(type, args) {
+		if (!this.params.adminSecret) {
+			throw new Error('adminSecret is required');
+		}
+
 		const [err, {data = null} = {}] = await __.to(
 			this.$http.request({
 				method: 'POST',

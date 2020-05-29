@@ -20,15 +20,6 @@ test('Sql throws without params', (t) => {
 		},
 		{instanceOf: Error},
 	);
-
-	t.throws(
-		() => {
-			const request = new Query({
-				queryUrl: process.env.GQL_ENDPOINT.replace('/v1/graphql', '/v1/query'),
-			});
-		},
-		{instanceOf: Error},
-	);
 });
 
 test('Sql failed query', async (t) => {
@@ -67,15 +58,6 @@ test('Gql throws without params', (t) => {
 		() => {
 			const request = new Gql({
 				graphqlUrl: 123,
-			});
-		},
-		{instanceOf: Error},
-	);
-
-	t.throws(
-		() => {
-			const request = new Gql({
-				graphqlUrl: process.env.GQL_ENDPOINT,
 			});
 		},
 		{instanceOf: Error},
@@ -135,15 +117,6 @@ test('Wsgql throws without params', (t) => {
 		() => {
 			const request = new Wsgql({
 				wsUrl: 123,
-			});
-		},
-		{instanceOf: Error},
-	);
-
-	t.throws(
-		() => {
-			const request = new Wsgql({
-				wsUrl: process.env.GQL_ENDPOINT.replace('http://', 'ws://').replace('https://', 'wss://'),
 			});
 		},
 		{instanceOf: Error},

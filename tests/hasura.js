@@ -13,15 +13,6 @@ test('throws without params', (t) => {
 	t.throws(
 		() => {
 			const orm = new Hasura({
-				graphqlUrl: 'ufhreioor',
-			});
-		},
-		{instanceOf: Error},
-	);
-
-	t.throws(
-		() => {
-			const orm = new Hasura({
 				graphqlUrl: 123,
 			});
 		},

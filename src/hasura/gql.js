@@ -6,6 +6,8 @@ class Gql {
 		const defaultParameters = {
 			graphqlUrl: null,
 			adminSecret: null,
+			hasuraRole: null,
+			jwt: null,
 			settings: {},
 		};
 		this.params = __.mergeDeep({}, defaultParameters, parameters);
@@ -18,17 +20,26 @@ class Gql {
 			throw new TypeError('graphqlUrl must be Url format');
 		}
 
-		if (!this.params.adminSecret) {
-			throw new Error('adminSecret is required');
+		let headers = {
+			'Content-Type': 'application/json',
+		};
+		if (this.params.adminSecret) {
+			headers = {
+				...headers,
+				'X-Hasura-Role': 'admin',
+				'x-hasura-admin-secret': this.params.adminSecret,
+			};
+		} else if (this.params.jwt) {
+			headers = {
+				...headers,
+				'X-Hasura-Role': this.params.hasuraRole || 'user',
+				Authorization: `Bearer ${this.params.jwt}`,
+			};
 		}
 
 		this.$http = axios.create({
 			baseURL: this.params.graphqlUrl,
-			headers: {
-				'Content-Type': 'application/json',
-				'X-Hasura-Role': 'admin',
-				'x-hasura-admin-secret': this.params.adminSecret,
-			},
+			headers,
 			json: true,
 		});
 	}
