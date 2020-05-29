@@ -67,6 +67,7 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
+    "graphql": "^15.0.0",
     "subscriptions-transport-ws": "^0.9.16",
     "ws": "^7.3.0"
   },
@@ -76,7 +77,6 @@
     "coveralls": "^3.1.0",
     "dotenv": "^8.2.0",
     "esm": "^3.2.25",
-    "graphql": "^15.0.0",
     "graphql-tag": "^2.10.3",
     "husky": "^4.2.5",
     "nodemon": "^2.0.4",
