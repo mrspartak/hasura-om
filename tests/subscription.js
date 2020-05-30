@@ -1,6 +1,7 @@
 require('dotenv').config();
 const test = require('ava');
 const {Hasura} = require('../src');
+const __ = require('../src/utils/helpers');
 
 test.before(async (t) => {
 	const orm = new Hasura({
@@ -102,6 +103,7 @@ test.serial('test sub', async (t) => {
 	});
 	t.is(err, null);
 
+	__.sleep(1000);
 	const id = response[0].id;
 
 	let responseCount = 0;
@@ -127,7 +129,7 @@ test.serial('test sub', async (t) => {
 			}
 		}, 500);
 
-		const unsub = orm.subscribe(
+		orm.subscribe(
 			{
 				_om_test: {
 					where: {
@@ -139,11 +141,14 @@ test.serial('test sub', async (t) => {
 			},
 			([err, data]) => {
 				t.is(err, null);
-				t.true(Array.isArray(data));
-				t.is(data[0].text, 'test_sub');
-
-				t.is(data[0].increment, 15 + responseCount * 10);
-				responseCount++;
+				if (data && data.length > 0) {
+					t.true(Array.isArray(data));
+					t.is(data[0].text, 'test_sub');
+					t.is(data[0].increment, 15 + responseCount * 10);
+					responseCount++;
+				} else {
+					t.log(data);
+				}
 
 				if (responseCount >= 2) {
 					resolve();
@@ -231,5 +236,85 @@ test.serial('test events connect/disconnect without lazy connection', (t) => {
 		setInterval(() => {
 			if (passed === 3) resolve();
 		}, 100);
+	});
+});
+
+test.serial('subscribe to more returns unsub', (t) => {
+	t.timeout(1000);
+	const orm = t.context.orm;
+
+	return new Promise(async (resolve) => {
+		const unsub = await orm.subscribeToMore(
+			{
+				_om_test: {},
+			},
+			([err, data]) => {
+				t.is(err, null);
+				t.true(Array.isArray(data));
+
+				resolve();
+			},
+		);
+		t.true(typeof unsub === 'function');
+	});
+});
+
+test.serial('subscribe to more works', (t) => {
+	t.timeout(2000);
+	let events = 0;
+	const orm = t.context.orm;
+
+	return new Promise(async (resolve) => {
+		const unsub = await orm.subscribeToMore(
+			{
+				_om_test: {},
+			},
+			([err, data]) => {
+				events++;
+				t.is(err, null);
+				t.true(Array.isArray(data));
+
+				if (events === 2) resolve();
+			},
+		);
+		t.true(typeof unsub === 'function');
+
+		setTimeout(async () => {
+			await orm.mutate({
+				_om_test: {
+					insert: {
+						objects: {
+							text: 'test_sub',
+							increment: 15,
+						},
+					},
+				},
+			});
+		}, 1100);
+	});
+});
+
+test.serial('subscribe to more firstPass', (t) => {
+	t.timeout(2000);
+	let events = 0;
+	const orm = t.context.orm;
+
+	return new Promise(async (resolve) => {
+		const unsub = await orm.subscribeToMore(
+			{
+				_om_test: {},
+			},
+			([err, data]) => {
+				events++;
+				t.is(err, null);
+				t.true(Array.isArray(data));
+
+				if (events === 2) resolve();
+			},
+			{
+				passFirst: true,
+			},
+		);
+		t.true(typeof unsub === 'function');
 	});
 });

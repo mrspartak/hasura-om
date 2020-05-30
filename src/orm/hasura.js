@@ -433,6 +433,32 @@ class Hasura {
 		return unsub; // Unsubscribe
 	}
 
+	async subscribeToMore(parameters, callback, settings = {}) {
+		settings = __.mergeDeep(
+			{
+				passFirst: false,
+			},
+			this.params.query,
+			settings,
+		);
+
+		callback(await this.query(parameters, settings));
+
+		let firstPassed = settings.passFirst;
+		const subSettings = __.mergeDeep({}, this.params.subscribe, settings);
+		return this.subscribe(
+			parameters,
+			(response) => {
+				if (firstPassed === true) {
+					callback(response);
+				} else {
+					firstPassed = true;
+				}
+			},
+			subSettings,
+		);
+	}
+
 	/* 
 		Settings
 			flatOne
