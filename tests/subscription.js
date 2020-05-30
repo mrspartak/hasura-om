@@ -294,7 +294,7 @@ test.serial('subscribe to more works', (t) => {
 	});
 });
 
-test.serial('subscribe to more firstPass', (t) => {
+test.serial('subscribe to more skipFirst', (t) => {
 	t.timeout(2000);
 	let events = 0;
 	const orm = t.context.orm;
@@ -312,7 +312,7 @@ test.serial('subscribe to more firstPass', (t) => {
 				if (events === 2) resolve();
 			},
 			{
-				passFirst: true,
+				skipFirst: false,
 			},
 		);
 		t.true(typeof unsub === 'function');

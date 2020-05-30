@@ -436,7 +436,7 @@ class Hasura {
 	async subscribeToMore(parameters, callback, settings = {}) {
 		settings = __.mergeDeep(
 			{
-				passFirst: false,
+				skipFirst: true,
 			},
 			this.params.query,
 			settings,
@@ -444,15 +444,15 @@ class Hasura {
 
 		callback(await this.query(parameters, settings));
 
-		let firstPassed = settings.passFirst;
+		let skippedFirst = !settings.skipFirst;
 		const subSettings = __.mergeDeep({}, this.params.subscribe, settings);
 		return this.subscribe(
 			parameters,
 			(response) => {
-				if (firstPassed === true) {
+				if (skippedFirst === true) {
 					callback(response);
 				} else {
-					firstPassed = true;
+					skippedFirst = true;
 				}
 			},
 			subSettings,
