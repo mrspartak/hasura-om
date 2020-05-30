@@ -244,7 +244,7 @@ test.serial('subscribe to more returns unsub', (t) => {
 	const orm = t.context.orm;
 
 	return new Promise(async (resolve) => {
-		const unsub = await orm.subscribeToMore(
+		const unsub = await orm.queryAndSubscribe(
 			{
 				_om_test: {},
 			},
@@ -265,7 +265,7 @@ test.serial('subscribe to more works', (t) => {
 	const orm = t.context.orm;
 
 	return new Promise(async (resolve) => {
-		const unsub = await orm.subscribeToMore(
+		const unsub = await orm.queryAndSubscribe(
 			{
 				_om_test: {},
 			},
@@ -300,7 +300,7 @@ test.serial('subscribe to more skipFirst', (t) => {
 	const orm = t.context.orm;
 
 	return new Promise(async (resolve) => {
-		const unsub = await orm.subscribeToMore(
+		const unsub = await orm.queryAndSubscribe(
 			{
 				_om_test: {},
 			},

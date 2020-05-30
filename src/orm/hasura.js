@@ -433,7 +433,7 @@ class Hasura {
 		return unsub; // Unsubscribe
 	}
 
-	async subscribeToMore(parameters, callback, settings = {}) {
+	async queryAndSubscribe(parameters, callback, settings = {}) {
 		settings = __.mergeDeep(
 			{
 				skipFirst: true,
