@@ -15,6 +15,7 @@ class WsGql extends EventEmitter {
 			settings: {
 				reconnect: true,
 				lazy: true,
+				webSocketImpl: ws,
 			},
 		};
 		this.params = mergeDeep({}, defaultParameters, parameters);
@@ -50,7 +51,7 @@ class WsGql extends EventEmitter {
 					headers,
 				},
 			},
-			ws,
+			this.params.settings.webSocketImpl,
 		);
 
 		this.client.on('connecting', () => {
