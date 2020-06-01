@@ -3,6 +3,7 @@
 
 [![Coverage Status](https://coveralls.io/repos/github/mrspartak/hasura-om/badge.svg?branch=master)](https://coveralls.io/github/mrspartak/hasura-om?branch=master)
 [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/xojs/xo)
+[![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/aaronhayes/awesome-hasura)
 
 ![Docs](https://github.com/mrspartak/hasura-om/workflows/Build%20and%20Deploy%20Docs/badge.svg)
 ![Test/Lint/Coverage](https://github.com/mrspartak/hasura-om/workflows/Lint%20/%20Test%20/%20Coverage/badge.svg)
