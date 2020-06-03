@@ -32,7 +32,13 @@ class Gql {
 		});
 	}
 
-	async run({query, variables}) {
+	/* 
+		RequestSettings
+			headers = {}
+	*/
+	async run({query, variables, requestSettings = {}}) {
+		const headers = __.mergeDeep({}, this.$http.defaults.headers, requestSettings.headers || {});
+
 		const [err, {data} = {}] = await __.to(
 			this.$http.request({
 				method: 'POST',
@@ -40,6 +46,7 @@ class Gql {
 					query,
 					variables,
 				},
+				headers,
 			}),
 		);
 		if (err) {

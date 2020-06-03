@@ -219,10 +219,12 @@ class Hasura {
 
                 fields
                 fragment
-            }
+			},
+			{ },
+			{ headers: { } }
         }
     */
-	async query(parameters, settings = {}) {
+	async query(parameters, settings = {}, requestSettings = {}) {
 		try {
 			var [query, variables, flatSettings] = this.buildQuery(parameters);
 		} catch (error) {
@@ -236,6 +238,7 @@ class Hasura {
 		const [err, response] = await this.$gql.run({
 			query,
 			variables,
+			requestSettings,
 		});
 		if (err) {
 			return [err];
@@ -345,7 +348,7 @@ class Hasura {
             }
         }
     */
-	async mutate(parameters, settings = {}) {
+	async mutate(parameters, settings = {}, requestSettings = {}) {
 		try {
 			var [query, variables, flatSettings] = this.buildMutation(parameters);
 		} catch (error) {
@@ -357,6 +360,7 @@ class Hasura {
 		const [err, response] = await this.$gql.run({
 			query,
 			variables,
+			requestSettings,
 		});
 		if (err) {
 			return [err];

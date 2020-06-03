@@ -153,6 +153,55 @@ test('Gql success query after config update', async (t) => {
 	t.is(request.params.settings.test, 1);
 });
 
+test('Gql request settings on run', async (t) => {
+	const request = new Gql({
+		graphqlUrl: process.env.GQL_ENDPOINT,
+		adminSecret: process.env.GQL_SECRET,
+	});
+
+	var [err, data] = await request.run({
+		query: `
+				query TestQuery {
+					_om_test(limit: 1) {
+						id
+						text
+						increment
+					}
+				}
+			`,
+		requestSettings: {
+			headers: {
+				'X-Hasura-User-ID': 1,
+				'X-Hasura-Role': 'user',
+			},
+		},
+	});
+	t.is(err, null);
+	t.true(data._om_test.length > 0);
+
+	// Field type in not alllowed to user role
+	var [err, data] = await request.run({
+		query: `
+				query TestQuery {
+					_om_test(limit: 1) {
+						id
+						text
+						increment
+						type
+					}
+				}
+			`,
+		requestSettings: {
+			headers: {
+				'X-Hasura-User-ID': 1,
+				'X-Hasura-Role': 'user',
+			},
+		},
+	});
+	t.is(err.message, 'field "type" not found in type: \'_om_test\'');
+	t.is(data, undefined);
+});
+
 test('Wsgql throws without params', (t) => {
 	t.throws(
 		() => {

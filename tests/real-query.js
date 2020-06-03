@@ -346,3 +346,61 @@ test.serial('simple add/update row', async (t) => {
 	t.is(typeof response, 'object');
 	t.is(response.text, 'test_123213123123');
 });
+
+test.serial('queries with user role', async (t) => {
+	const orm = t.context.orm;
+
+	// Base fragment has type field in it
+	var [err, response] = await orm.query(
+		{
+			_om_test: {},
+		},
+		{},
+		{
+			headers: {
+				'X-Hasura-User-ID': 1,
+				'X-Hasura-Role': 'user',
+			},
+		},
+	);
+	t.is(err.message, 'field "type" not found in type: \'_om_test\'');
+	t.is(response, undefined);
+
+	var [err, response] = await orm.query(
+		{
+			_om_test: {
+				fields: ['id'],
+			},
+		},
+		{},
+		{
+			headers: {
+				'X-Hasura-User-ID': 1,
+				'X-Hasura-Role': 'user',
+			},
+		},
+	);
+	t.is(err, null);
+	t.true(response.length > 0);
+
+	// Base fragment has type field in it
+	var [err, response] = await orm.mutate(
+		{
+			_om_test: {
+				insert: {
+					objects: {
+						text: 'test 4',
+					},
+				},
+			},
+		},
+		{},
+		{
+			headers: {
+				'X-Hasura-User-ID': 1,
+				'X-Hasura-Role': 'user',
+			},
+		},
+	);
+	t.is(err.message, 'no mutations exist');
+});

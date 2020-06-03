@@ -63,7 +63,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "xo --fix && npx ava --tap | npx tap-dot && git add ."
+      "pre-commit": "xo --fix && ava --fail-fast"
     }
   },
   "dependencies": {
