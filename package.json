@@ -44,7 +44,8 @@
       "block-scoped-var": 0,
       "no-sequences": 0,
       "no-negated-condition": 0,
-      "no-async-promise-executor": 0
+      "no-async-promise-executor": 0,
+      "unicorn/no-reduce": 0
     },
     "ignores": [
       "docs/**"

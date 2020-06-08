@@ -153,7 +153,7 @@ test('Gql success query after config update', async (t) => {
 	t.is(request.params.settings.test, 1);
 });
 
-test('Gql request settings on run', async (t) => {
+/* test('Gql request settings on run', async (t) => {
 	const request = new Gql({
 		graphqlUrl: process.env.GQL_ENDPOINT,
 		adminSecret: process.env.GQL_SECRET,
@@ -200,7 +200,7 @@ test('Gql request settings on run', async (t) => {
 	});
 	t.is(err.message, 'field "type" not found in type: \'_om_test\'');
 	t.is(data, undefined);
-});
+}); */
 
 test('Wsgql throws without params', (t) => {
 	t.throws(
