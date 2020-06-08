@@ -173,7 +173,7 @@ test('Gql request settings on run', async (t) => {
 			`,
 	});
 	t.is(err, null);
-	t.deepEqual(data, { insert__om_test: { affected_rows: 1 } });
+	t.deepEqual(data, {insert__om_test: {affected_rows: 1}});
 
 	var [err, data] = await request.run({
 		query: `
