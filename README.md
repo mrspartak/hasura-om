@@ -1,5 +1,6 @@
 # Hasura ORM library
 [![NPM](https://nodei.co/npm/hasura-om.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/hasura-om)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmrspartak%2Fhasura-om.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmrspartak%2Fhasura-om?ref=badge_shield)
 
 [![Coverage Status](https://coveralls.io/repos/github/mrspartak/hasura-om/badge.svg?branch=master)](https://coveralls.io/github/mrspartak/hasura-om?branch=master)
 [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/xojs/xo)
@@ -329,3 +330,6 @@ await orm.query({
     }
 })
 ```
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmrspartak%2Fhasura-om.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmrspartak%2Fhasura-om?ref=badge_large)
