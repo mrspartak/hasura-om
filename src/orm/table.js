@@ -251,7 +251,7 @@ class Table {
 	build_update(parameters) {
 		const {fields, fragment, fragmentName, fragmentOperationArguments} = this.getFieldsFromParams(parameters);
 
-		var {variables, query_arguments, operation_arguments} = this.buildArguments(['where', '_set', '_inc'], parameters, 'u');
+		var {variables, query_arguments, operation_arguments} = this.buildArguments(['where', '_set', '_inc', '_append', '_prepend'], parameters, 'u');
 
 		const flatSetting = {
 			[`${this.params.name}.update`]: `update_${this.params.name}.returning`,
@@ -436,6 +436,8 @@ class Table {
 			on_conflict: `${this.params.name}_on_conflict`,
 			_set: `${this.params.name}_set_input`,
 			_inc: `${this.params.name}_inc_input`,
+			_append: `${this.params.name}_append_input`,
+			_prepend: `${this.params.name}_prepend_input`,
 		};
 
 		const variables = {};
