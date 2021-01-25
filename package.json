@@ -74,7 +74,7 @@
     "ws": "^7.3.0"
   },
   "devDependencies": {
-    "ackee-tracker": "^4.0.0",
+    "ackee-tracker": "^5.0.1",
     "ava": "^3.8.2",
     "coveralls": "^3.1.0",
     "dotenv": "^8.2.0",
