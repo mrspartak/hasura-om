@@ -68,7 +68,7 @@
     }
   },
   "dependencies": {
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "graphql": "^15.0.0",
     "subscriptions-transport-ws": "^0.9.16",
     "ws": "^7.3.0"
