@@ -1,11 +1,10 @@
 name: Build and Deploy Docs
-on:
+on: 
   push:	
-    branches:	
-      - master
-    paths:
-    - 'docs/**'
-    
+      branches:	
+        - master
+      paths:
+      - 'docs/**'
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -13,9 +12,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@master
 
-    - name: Build and Deploy Docs
-      uses: testthedocs/github-pages-deploy-action@master
+    - name: vuepress-deploy
+      uses: jenkey2011/vuepress-deploy@master
       env:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        BUILD_DIR: docs/.vuepress/dist # The folder, the action should deploy.
-        BUILD_SCRIPT: npm install && npm run docs:build # The build script the action should run prior to deploying.
+        TARGET_REPO: username/repo
+        TARGET_BRANCH: master
+        BUILD_SCRIPT: yarn && yarn build
+        BUILD_DIR: docs/.vuepress/dist
+        CNAME: https://hasura-om.js.org
