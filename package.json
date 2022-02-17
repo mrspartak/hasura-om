@@ -1,6 +1,6 @@
 {
   "name": "hasura-om",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Hasura Fragment focused ORM library",
   "author": "Spartak <iam@spartak.io> (https://spartak.io/)",
   "keywords": [
