@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Introduction | API | Hasura ORM</title>
+    <meta name="generator" content="VuePress 1.5.0">
+    
+    <meta name="description" content="Fragment oriented Hasura ORM for backends with many stuff "from the box"">
+    <link rel="preload" href="/assets/css/0.styles.d3e2721c.css" as="style"><link rel="preload" href="/assets/js/app.b0b3b14d.js" as="script"><link rel="preload" href="/assets/js/2.8f0b80ee.js" as="script"><link rel="preload" href="/assets/js/3.3e1d89ec.js" as="script"><link rel="preload" href="/assets/js/8.99882b7b.js" as="script"><link rel="prefetch" href="/assets/js/10.28e73c70.js"><link rel="prefetch" href="/assets/js/11.e6b53fb8.js"><link rel="prefetch" href="/assets/js/12.c1bfed8a.js"><link rel="prefetch" href="/assets/js/13.667ee254.js"><link rel="prefetch" href="/assets/js/14.12e1f4cd.js"><link rel="prefetch" href="/assets/js/15.c500bb3c.js"><link rel="prefetch" href="/assets/js/16.e41e82c7.js"><link rel="prefetch" href="/assets/js/17.c051b656.js"><link rel="prefetch" href="/assets/js/18.e922d575.js"><link rel="prefetch" href="/assets/js/19.227f4d19.js"><link rel="prefetch" href="/assets/js/4.c5e72030.js"><link rel="prefetch" href="/assets/js/5.f2fb31f5.js"><link rel="prefetch" href="/assets/js/6.6676af00.js"><link rel="prefetch" href="/assets/js/7.87be8f7d.js"><link rel="prefetch" href="/assets/js/9.fc5e3096.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.d3e2721c.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="/hasura_icon_blue.svg" alt="Hasura ORM" class="logo"> <span class="site-name can-hide">Hasura ORM</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/guide/" class="nav-link">
+  Guide
+</a></div><div class="nav-item"><a href="/api/" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  API
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="Languages" class="dropdown-title"><span class="title">Languages</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/api/" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  English
+</a></li><li class="dropdown-item"><!----> <a href="/ru/" class="nav-link">
+  Русский (черновик)
+</a></li></ul></div></div> <a href="https://github.com/mrspartak/hasura-om" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/guide/" class="nav-link">
+  Guide
+</a></div><div class="nav-item"><a href="/api/" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  API
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="Languages" class="dropdown-title"><span class="title">Languages</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/api/" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  English
+</a></li><li class="dropdown-item"><!----> <a href="/ru/" class="nav-link">
+  Русский (черновик)
+</a></li></ul></div></div> <a href="https://github.com/mrspartak/hasura-om" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Guide</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/guide/" class="sidebar-link">Introduction</a></li><li><a href="/guide/getting-started.html" class="sidebar-link">Getting started</a></li><li><a href="/guide/create-fragment.html" class="sidebar-link">Creating fragment</a></li><li><a href="/guide/query.html" class="sidebar-link">Making queries</a></li><li><a href="/guide/mutation.html" class="sidebar-link">Making mutations</a></li><li><a href="/guide/subscribe.html" class="sidebar-link">Subscribing</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Api</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/api/" aria-current="page" class="active sidebar-link">Introduction</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/api/#what-is-return-by-hasura-om" class="sidebar-link">What is return by hasura-om</a></li><li class="sidebar-sub-header"><a href="/api/#basic-initialization" class="sidebar-link">Basic initialization</a></li></ul></li><li><a href="/api/hasura.html" class="sidebar-link">Hasura</a></li><li><a href="/api/table.html" class="sidebar-link">Table</a></li><li><a href="/api/field.html" class="sidebar-link">Field</a></li><li><a href="/api/fragment.html" class="sidebar-link">Fragment</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="introduction"><a href="#introduction" class="header-anchor">#</a> Introduction</h1> <h2 id="what-is-return-by-hasura-om"><a href="#what-is-return-by-hasura-om" class="header-anchor">#</a> What is return by hasura-om</h2> <p>This can change in the futere, but all basic blocks are returned for any needs</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">const</span> <span class="token punctuation">{</span> Hasura<span class="token punctuation">,</span> Table<span class="token punctuation">,</span> Fragment<span class="token punctuation">,</span> Field <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'hasura-om'</span><span class="token punctuation">)</span>
+</code></pre></div><h2 id="basic-initialization"><a href="#basic-initialization" class="header-anchor">#</a> Basic initialization</h2> <p>You can initialize automatically - orm will get data from Hasura to crate all tables/views and create base Fragments</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">const</span> <span class="token punctuation">{</span> Hasura <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'hasura-om'</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> orm <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Hasura</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    graphqlUrl<span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+    adminSecret<span class="token operator">:</span> <span class="token string">''</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">await</span> orm<span class="token punctuation">.</span><span class="token function">generateTablesFromAPI</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre></div><p>Or you can do everything manually</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">const</span> <span class="token punctuation">{</span> Hasura<span class="token punctuation">,</span> Table<span class="token punctuation">,</span> Fragment<span class="token punctuation">,</span> Field <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'hasura-om'</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> orm <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Hasura</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    graphqlUrl<span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+    adminSecret<span class="token operator">:</span> <span class="token string">''</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+<span class="token comment">/*
+    Here we are creating table user with fields id and name and id field is primary key
+*/</span>
+orm<span class="token punctuation">.</span><span class="token function">createTable</span><span class="token punctuation">(</span><span class="token punctuation">{</span>  name<span class="token operator">:</span> <span class="token string">'user'</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">createField</span><span class="token punctuation">(</span><span class="token punctuation">{</span>name<span class="token operator">:</span> <span class="token string">'id'</span><span class="token punctuation">,</span> <span class="token string">'isPrimary'</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">createField</span><span class="token punctuation">(</span><span class="token punctuation">{</span>name<span class="token operator">:</span> <span class="token string">'name'</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">generateBaseFragments</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/guide/subscribe.html" class="prev">
+        Subscribing
+      </a></span> <span class="next"><a href="/api/hasura.html">
+        Hasura
+      </a>
+      →
+    </span></p></div>  <footer class="footer" data-v-0fa9bcfa>
+	This framework is not affiliated with the Hasura team.
+	<br data-v-0fa9bcfa><br data-v-0fa9bcfa>
+	MIT Licensed | 2020-present
+	<a href="https://github.com/mrspartak" target="_blank" rel="noopener noreferrer" data-v-0fa9bcfa>by Spartak</a></footer></main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.b0b3b14d.js" defer></script><script src="/assets/js/2.8f0b80ee.js" defer></script><script src="/assets/js/3.3e1d89ec.js" defer></script><script src="/assets/js/8.99882b7b.js" defer></script>
+  </body>
+</html>

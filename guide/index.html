@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Guide | Hasura ORM</title>
+    <meta name="generator" content="VuePress 1.5.0">
+    
+    <meta name="description" content="Fragment oriented Hasura ORM for backends with many stuff "from the box"">
+    <link rel="preload" href="/assets/css/0.styles.d3e2721c.css" as="style"><link rel="preload" href="/assets/js/app.b0b3b14d.js" as="script"><link rel="preload" href="/assets/js/2.8f0b80ee.js" as="script"><link rel="preload" href="/assets/js/3.3e1d89ec.js" as="script"><link rel="preload" href="/assets/js/13.667ee254.js" as="script"><link rel="prefetch" href="/assets/js/10.28e73c70.js"><link rel="prefetch" href="/assets/js/11.e6b53fb8.js"><link rel="prefetch" href="/assets/js/12.c1bfed8a.js"><link rel="prefetch" href="/assets/js/14.12e1f4cd.js"><link rel="prefetch" href="/assets/js/15.c500bb3c.js"><link rel="prefetch" href="/assets/js/16.e41e82c7.js"><link rel="prefetch" href="/assets/js/17.c051b656.js"><link rel="prefetch" href="/assets/js/18.e922d575.js"><link rel="prefetch" href="/assets/js/19.227f4d19.js"><link rel="prefetch" href="/assets/js/4.c5e72030.js"><link rel="prefetch" href="/assets/js/5.f2fb31f5.js"><link rel="prefetch" href="/assets/js/6.6676af00.js"><link rel="prefetch" href="/assets/js/7.87be8f7d.js"><link rel="prefetch" href="/assets/js/8.99882b7b.js"><link rel="prefetch" href="/assets/js/9.fc5e3096.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.d3e2721c.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="/hasura_icon_blue.svg" alt="Hasura ORM" class="logo"> <span class="site-name can-hide">Hasura ORM</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/guide/" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  Guide
+</a></div><div class="nav-item"><a href="/api/" class="nav-link">
+  API
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="Languages" class="dropdown-title"><span class="title">Languages</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/guide/" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  English
+</a></li><li class="dropdown-item"><!----> <a href="/ru/" class="nav-link">
+  Русский (черновик)
+</a></li></ul></div></div> <a href="https://github.com/mrspartak/hasura-om" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/guide/" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  Guide
+</a></div><div class="nav-item"><a href="/api/" class="nav-link">
+  API
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="Languages" class="dropdown-title"><span class="title">Languages</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/guide/" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  English
+</a></li><li class="dropdown-item"><!----> <a href="/ru/" class="nav-link">
+  Русский (черновик)
+</a></li></ul></div></div> <a href="https://github.com/mrspartak/hasura-om" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Guide</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/guide/" aria-current="page" class="active sidebar-link">Introduction</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/guide/#motivation" class="sidebar-link">Motivation</a></li></ul></li><li><a href="/guide/getting-started.html" class="sidebar-link">Getting started</a></li><li><a href="/guide/create-fragment.html" class="sidebar-link">Creating fragment</a></li><li><a href="/guide/query.html" class="sidebar-link">Making queries</a></li><li><a href="/guide/mutation.html" class="sidebar-link">Making mutations</a></li><li><a href="/guide/subscribe.html" class="sidebar-link">Subscribing</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Api</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/api/" class="sidebar-link">Introduction</a></li><li><a href="/api/hasura.html" class="sidebar-link">Hasura</a></li><li><a href="/api/table.html" class="sidebar-link">Table</a></li><li><a href="/api/field.html" class="sidebar-link">Field</a></li><li><a href="/api/fragment.html" class="sidebar-link">Fragment</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="introduction"><a href="#introduction" class="header-anchor">#</a> Introduction</h1> <h2 id="motivation"><a href="#motivation" class="header-anchor">#</a> Motivation</h2> <p>We have a microservice infrastructure and need cross-service transactions. One way to do it is to send a graphql query + variables to one service and perform a query there. So this library helps to send more standardized data via JS Objects. If you know a better way to solve this problem, you are welcome to issues or email.</p></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><!----> <span class="next"><a href="/guide/getting-started.html">
+        Getting started
+      </a>
+      →
+    </span></p></div>  <footer class="footer" data-v-0fa9bcfa>
+	This framework is not affiliated with the Hasura team.
+	<br data-v-0fa9bcfa><br data-v-0fa9bcfa>
+	MIT Licensed | 2020-present
+	<a href="https://github.com/mrspartak" target="_blank" rel="noopener noreferrer" data-v-0fa9bcfa>by Spartak</a></footer></main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.b0b3b14d.js" defer></script><script src="/assets/js/2.8f0b80ee.js" defer></script><script src="/assets/js/3.3e1d89ec.js" defer></script><script src="/assets/js/13.667ee254.js" defer></script>
+  </body>
+</html>

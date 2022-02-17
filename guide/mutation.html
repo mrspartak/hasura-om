@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Making mutations | Guide | Hasura ORM</title>
+    <meta name="generator" content="VuePress 1.5.0">
+    
+    <meta name="description" content="Fragment oriented Hasura ORM for backends with many stuff "from the box"">
+    <link rel="preload" href="/assets/css/0.styles.d3e2721c.css" as="style"><link rel="preload" href="/assets/js/app.b0b3b14d.js" as="script"><link rel="preload" href="/assets/js/2.8f0b80ee.js" as="script"><link rel="preload" href="/assets/js/3.3e1d89ec.js" as="script"><link rel="preload" href="/assets/js/16.e41e82c7.js" as="script"><link rel="prefetch" href="/assets/js/10.28e73c70.js"><link rel="prefetch" href="/assets/js/11.e6b53fb8.js"><link rel="prefetch" href="/assets/js/12.c1bfed8a.js"><link rel="prefetch" href="/assets/js/13.667ee254.js"><link rel="prefetch" href="/assets/js/14.12e1f4cd.js"><link rel="prefetch" href="/assets/js/15.c500bb3c.js"><link rel="prefetch" href="/assets/js/17.c051b656.js"><link rel="prefetch" href="/assets/js/18.e922d575.js"><link rel="prefetch" href="/assets/js/19.227f4d19.js"><link rel="prefetch" href="/assets/js/4.c5e72030.js"><link rel="prefetch" href="/assets/js/5.f2fb31f5.js"><link rel="prefetch" href="/assets/js/6.6676af00.js"><link rel="prefetch" href="/assets/js/7.87be8f7d.js"><link rel="prefetch" href="/assets/js/8.99882b7b.js"><link rel="prefetch" href="/assets/js/9.fc5e3096.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.d3e2721c.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="/hasura_icon_blue.svg" alt="Hasura ORM" class="logo"> <span class="site-name can-hide">Hasura ORM</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/guide/" class="nav-link router-link-active">
+  Guide
+</a></div><div class="nav-item"><a href="/api/" class="nav-link">
+  API
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="Languages" class="dropdown-title"><span class="title">Languages</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/guide/mutation.html" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  English
+</a></li><li class="dropdown-item"><!----> <a href="/ru/" class="nav-link">
+  Русский (черновик)
+</a></li></ul></div></div> <a href="https://github.com/mrspartak/hasura-om" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/guide/" class="nav-link router-link-active">
+  Guide
+</a></div><div class="nav-item"><a href="/api/" class="nav-link">
+  API
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="Languages" class="dropdown-title"><span class="title">Languages</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/guide/mutation.html" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  English
+</a></li><li class="dropdown-item"><!----> <a href="/ru/" class="nav-link">
+  Русский (черновик)
+</a></li></ul></div></div> <a href="https://github.com/mrspartak/hasura-om" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Guide</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/guide/" aria-current="page" class="sidebar-link">Introduction</a></li><li><a href="/guide/getting-started.html" class="sidebar-link">Getting started</a></li><li><a href="/guide/create-fragment.html" class="sidebar-link">Creating fragment</a></li><li><a href="/guide/query.html" class="sidebar-link">Making queries</a></li><li><a href="/guide/mutation.html" aria-current="page" class="active sidebar-link">Making mutations</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/guide/mutation.html#mutate" class="sidebar-link">Mutate</a></li><li class="sidebar-sub-header"><a href="/guide/mutation.html#insert" class="sidebar-link">Insert</a></li><li class="sidebar-sub-header"><a href="/guide/mutation.html#update" class="sidebar-link">Update</a></li><li class="sidebar-sub-header"><a href="/guide/mutation.html#delete" class="sidebar-link">Delete</a></li></ul></li><li><a href="/guide/subscribe.html" class="sidebar-link">Subscribing</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Api</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/api/" class="sidebar-link">Introduction</a></li><li><a href="/api/hasura.html" class="sidebar-link">Hasura</a></li><li><a href="/api/table.html" class="sidebar-link">Table</a></li><li><a href="/api/field.html" class="sidebar-link">Field</a></li><li><a href="/api/fragment.html" class="sidebar-link">Fragment</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="making-mutations"><a href="#making-mutations" class="header-anchor">#</a> Making mutations</h1> <h2 id="mutate"><a href="#mutate" class="header-anchor">#</a> Mutate</h2> <p>There are 3 types of mutation you can call: insert, update, delete. And of course you can call them all together to any tables and also with nesting</p> <h2 id="insert"><a href="#insert" class="header-anchor">#</a> Insert</h2> <p>Scheme to call is <code>table_name</code>.<code>insert</code>.<code>objects</code> it can be an object or an array of objects. You can also insert related objects (take a look at animals table).
+Also you have an ability to choose what fragment or fields will return to you. By default it is <code>base</code> fragments with all fields (this will not work with nested insert!)</p> <div class="custom-block warning"><p class="custom-block-title">WARNING</p> <p>For nested inserts you should make special fragment with nested fields, if you need them</p></div> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">let</span> <span class="token punctuation">[</span>err<span class="token punctuation">,</span> response<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token keyword">await</span> orm<span class="token punctuation">.</span><span class="token function">mutate</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    user<span class="token operator">:</span> <span class="token punctuation">{</span>
+        insert<span class="token operator">:</span> <span class="token punctuation">{</span>
+            objects<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+                name<span class="token operator">:</span> <span class="token string">'Peter'</span><span class="token punctuation">,</span>
+                age<span class="token operator">:</span> <span class="token number">17</span>
+            <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+            fragment<span class="token operator">:</span> <span class="token string">'pk'</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    animals<span class="token operator">:</span> <span class="token punctuation">{</span>
+        insert<span class="token operator">:</span> <span class="token punctuation">{</span>
+            objects<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+                type<span class="token operator">:</span> <span class="token string">'dog'</span><span class="token punctuation">,</span>
+                can<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'bork'</span><span class="token punctuation">,</span> <span class="token string">'sit'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                species<span class="token operator">:</span> <span class="token punctuation">{</span>
+                    data<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+                        name<span class="token operator">:</span> <span class="token string">'Bobby'</span><span class="token punctuation">,</span>
+                        age<span class="token operator">:</span> <span class="token number">1</span>
+                    <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+                        name<span class="token operator">:</span> <span class="token string">'Betty'</span><span class="token punctuation">,</span>
+                        age<span class="token operator">:</span> <span class="token number">3</span>
+                    <span class="token punctuation">}</span><span class="token punctuation">]</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span><span class="token punctuation">]</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token comment">/* 
+    reponse - {
+        user: [{
+            id: 10
+        }],
+        animals: [{
+            type: 'dog',
+            can: bork,sit,
+            ...allBaseAnimalFields
+        }]
+    }
+*/</span>
+</code></pre></div><div class="custom-block tip"><p class="custom-block-title">TIP</p> <p>Response in mutations also modified to return a most simple structure.
+Use a setting <code>flatOne = false</code> at Hasura or query level if you want more predictable structure.
+<a href="../api/hasura#this-flatgqlresponse-flatsettings-settings-parameters">Read more in API</a></p></div> <h2 id="update"><a href="#update" class="header-anchor">#</a> Update</h2> <p>Scheme to call is <code>table_name</code>.<code>update</code></p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">let</span> <span class="token punctuation">[</span>err<span class="token punctuation">,</span> response<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token keyword">await</span> orm<span class="token punctuation">.</span><span class="token function">mutate</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    user<span class="token operator">:</span> <span class="token punctuation">{</span>
+        update<span class="token operator">:</span> <span class="token punctuation">{</span>
+            where<span class="token operator">:</span> <span class="token punctuation">{</span> age<span class="token operator">:</span> <span class="token punctuation">{</span> _gt<span class="token operator">:</span> <span class="token number">21</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+            _set<span class="token operator">:</span> <span class="token punctuation">{</span> isAdult<span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token comment">/* 
+    response - [{
+        ..allBaseUserFields
+    }]
+*/</span>
+
+
+<span class="token keyword">let</span> <span class="token punctuation">[</span>err<span class="token punctuation">,</span> response<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token keyword">await</span> orm<span class="token punctuation">.</span><span class="token function">mutate</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    user<span class="token operator">:</span> <span class="token punctuation">{</span>
+        update<span class="token operator">:</span> <span class="token punctuation">{</span>
+            where<span class="token operator">:</span> <span class="token punctuation">{</span> id<span class="token operator">:</span> <span class="token punctuation">{</span> _eq<span class="token operator">:</span> <span class="token number">5</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+            _inc<span class="token operator">:</span> <span class="token punctuation">{</span> money<span class="token operator">:</span> <span class="token number">100</span> <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    wallet<span class="token operator">:</span> <span class="token punctuation">{</span>
+        insert<span class="token operator">:</span> <span class="token punctuation">{</span>
+            objects<span class="token operator">:</span> <span class="token punctuation">{</span>
+                user_id<span class="token operator">:</span> <span class="token number">5</span><span class="token punctuation">,</span>
+                deposit<span class="token operator">:</span> <span class="token number">100</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token comment">/* 
+    response - {
+        user: [{
+            id: 5,
+            money: 1100,
+            ...
+        }],
+        wallet: [{
+            id: 1003,
+            user_id: 5,
+            deposit: 100,
+            ...
+        }]
+    }
+*/</span>
+</code></pre></div><p>Note that last request will be made in transaction, so if one request fails - both will fail.</p> <h2 id="delete"><a href="#delete" class="header-anchor">#</a> Delete</h2> <p>Scheme to call is <code>table_name</code>.<code>delete</code></p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">const</span> <span class="token punctuation">[</span>err<span class="token punctuation">,</span> response<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token keyword">await</span> orm<span class="token punctuation">.</span><span class="token function">mutate</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    _om_test<span class="token operator">:</span> <span class="token punctuation">{</span>
+        user<span class="token operator">:</span> <span class="token punctuation">{</span>
+            where<span class="token operator">:</span> <span class="token punctuation">{</span> id<span class="token operator">:</span> <span class="token punctuation">{</span> _eq<span class="token operator">:</span> <span class="token number">2088</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">/* 
+    response - [{
+        id: 2088,
+        ...userFields
+    }]
+*/</span>
+</code></pre></div><div class="custom-block tip"><p class="custom-block-title">TIP</p> <p>There is no way to return affected_rows currently. If you need them, please open an issue</p></div></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/guide/query.html" class="prev">
+        Making queries
+      </a></span> <span class="next"><a href="/guide/subscribe.html">
+        Subscribing
+      </a>
+      →
+    </span></p></div>  <footer class="footer" data-v-0fa9bcfa>
+	This framework is not affiliated with the Hasura team.
+	<br data-v-0fa9bcfa><br data-v-0fa9bcfa>
+	MIT Licensed | 2020-present
+	<a href="https://github.com/mrspartak" target="_blank" rel="noopener noreferrer" data-v-0fa9bcfa>by Spartak</a></footer></main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.b0b3b14d.js" defer></script><script src="/assets/js/2.8f0b80ee.js" defer></script><script src="/assets/js/3.3e1d89ec.js" defer></script><script src="/assets/js/16.e41e82c7.js" defer></script>
+  </body>
+</html>
